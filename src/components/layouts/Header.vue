@@ -38,8 +38,8 @@
               <v-btn icon>
               <v-avatar v-on="on" size="30">
               <img
-                :src="user.avator"
-                :alt="user.name"
+                :src="user.userinfo.avatar"
+                :alt="user.userinfo.user.username"
               >
               </v-avatar>
               </v-btn>

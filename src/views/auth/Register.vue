@@ -11,7 +11,7 @@
         lazy-validation
         >
             <v-text-field
-                v-model="name"
+                v-model.trim="name"
                 :error-messages="nameErrors"
                 :counter="10"
                 label="用户名"
@@ -20,7 +20,7 @@
             ></v-text-field>
 
             <v-text-field
-                v-model="email"
+                v-model.trim="email"
                 :error-messages="emailErrors"
                 label="邮件地址"
                 required
@@ -28,7 +28,7 @@
             ></v-text-field>
 
             <v-text-field
-                v-model="password"
+                v-model.trim="password"
                 :error-messages="passwordErrors"
                 :append-icon="showpassword? 'mdi-eye' : 'mdi-eye-off'"
                 :type="showpassword? 'text':'password'"
@@ -39,7 +39,7 @@
             ></v-text-field>
 
             <v-text-field
-                v-model="repassword"
+                v-model.trim="repassword"
                 :error-messages="repasswordErrors"
                 :append-icon="showrepassword? 'mdi-eye' : 'mdi-eye-off'"
                 :type="showrepassword? 'text':'password'"
@@ -108,8 +108,8 @@
       passwordErrors(){
         const errors = []
         if(!this.$v.password.$dirty) return errors
-        !this.$v.password.maxLength && errors.push('用户名最长10个字符串')
-        !this.$v.password.minLength && errors.push('用户名最短6个字符串')      
+        !this.$v.password.maxLength && errors.push('密码最长16个字符串')
+        !this.$v.password.minLength && errors.push('密码最短6个字符串')      
         !this.$v.password.required && errors.push('密码必填')
         return errors
       },
@@ -132,21 +132,23 @@
       },
       submit () {
         const user = {
-            name: this.name,
+            username: this.name,
             email: this.email,
             password: this.password,
-            avator: `https://api.adorable.io/avatars/200/${this.name}.png` 
+            avatar: `https://api.adorable.io/avatars/200/${this.name}.png` 
         }
-        const localUser =  this.$store.state.user
-        if (localUser) {
-          if (localUser.name === user.name) {
-            this.showMsg('该用户已存在', 'error')
-          } else {
-            this.login(user)
+
+        this.axios.post(process.env.VUE_APP_APIURL+'/account/register/', user).then((response) => {
+          this.axios.defaults.headers.common['Authorization'] = 'JWT '+ response.data.data.token
+          this.login(response.data.data)
+        }).catch( (error) => {
+          if(error.response.status=='400'){
+            this.showMsg(error.response.data.msg, 'error')
+          }else{
+            this.showMsg('网络错误', 'error')
           }
-        } else {
-          this.login(user)
-        }
+        })
+
 
       },
       clear () {

@@ -11,9 +11,9 @@
           <v-card-subtitle class="font-weight-regular HomeCard-detail white--text">{{subtitle}}</v-card-subtitle>
 
           <v-card-text class="HomeCard-bottom">
-                    <v-avatar v-on="on" size="30">
+                    <v-avatar size="30">
                     <img
-                      :src="avator"
+                      :src="avatar"
                       :alt="author"
                     >
                     </v-avatar>
@@ -33,7 +33,7 @@ export default {
         img:'http://photos.breadtrip.com/photo_2019_10_15_a62a735bac66d94567b709f570194f92.jpg?imageView/1/w/640/h/480/q/85',
         title: '非洲海岛流浪记🇲🇺毛里求斯cdn',
         subtitle:'2019.10.1   9025浏览',
-        avator:'https://api.adorable.io/avatars/200/asfdafasdf.png',
+        avatar:'https://api.adorable.io/avatars/200/asfdafasdf.png',
         author:'小一爱客随'
     }),
 }

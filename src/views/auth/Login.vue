@@ -1,5 +1,7 @@
 <template>
    <v-card class="mx-3 mt-5">
+       <v-alert dismissible  :type="msgType" :value="msgShow">{{msg}}</v-alert>
+
        <v-card-title class="d-flex justify-center">登录</v-card-title>
 
        <v-card-text> 
@@ -10,7 +12,7 @@
             rounded
                solo
                 append-icon='mdi-account'
-                v-model="name"
+                v-model.trim="name"
                 :error-messages="nameErrors"
                 :counter="10"
                 label="用户名"
@@ -21,7 +23,7 @@
             <v-text-field
                 rounded
                 solo
-                v-model="password"
+                v-model.trim="password"
                 :error-messages="passwordErrors"
                 :append-icon="showpassword? 'mdi-eye' : 'mdi-eye-off'"
                 :type="showpassword? 'text':'password'"
@@ -95,22 +97,22 @@
            })  
        },
        submit(){
+
           const user = {
-             name: this.name,
+             username: this.name,
              password: this.password,
           }
-          const localUser = this.$store.state.user
-
-          if (localUser) {
-               if (localUser.name != user.name || localUser.password != user.password) {
-                  this.showMsg('用户名或密码不正确')
-               } else {
-                  
-                  this.$store.dispatch('login')
-               }
-               } else {
-               this.showMsg('不存在该用户')
-            }
+          this.axios.post('/account/login/', user).then((response) => {
+              this.axios.defaults.headers.common['Authorization'] = 'JWT '+ response.data.data.token
+              this.$store.dispatch('login', response.data.data)
+          }).catch( (error) => {
+              if(error.response.status=='404' || error.response.status=='400'){
+                this.showMsg(error.response.data.msg, 'error')
+              }else{
+                this.showMsg('网络错误', 'error')
+              }
+          });
+          
        },
        clear () {
         this.$v.$reset()
@@ -126,6 +128,7 @@
           this.timer = setTimeout(() => {this.msgShow=false}, 3300)
         })
       }
+
     }
 
 }
