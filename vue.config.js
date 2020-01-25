@@ -44,10 +44,7 @@ module.exports = {
         res.json(seller);
       });
 
-
     }
-
-
   }
 
 }
