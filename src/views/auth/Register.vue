@@ -83,9 +83,6 @@
       repassword:'',
       showpassword:false,
       showrepassword:false,
-      msg:'',
-      msgType:'success',
-      msgShow:false,
     }),
 
     computed: {
@@ -143,13 +140,13 @@
           this.login(response.data.data)
         }).catch( (error) => {
           if(error.response.status=='400'){
-            this.showMsg(error.response.data.msg, 'error')
+            this.$store.dispatch('updateAlter',{msg:error.response.data.msg, msgType:'error', msgShow:true})
+            this.timer = setTimeout(() => {this.$store.dispatch('updateAlter',{msgShow:false}) }, 3300)
           }else{
-            this.showMsg('网络错误', 'error')
+            this.$store.dispatch('updateAlter',{msg:'网络错误', msgType:'error', msgShow:true})
+            this.timer = setTimeout(() => {this.$store.dispatch('updateAlter',{msgShow:false}) }, 3300)
           }
         })
-
-
       },
       clear () {
         this.$v.$reset()
@@ -158,19 +155,9 @@
         this.password = ''
         this.repassword = ''
       },
-      
       login(user){
           this.$store.dispatch('login', user)
       },
-      showMsg(msg, type = 'info'){
-        this.msg = msg
-        this.msgType = type
-        this.msgShow = false
-        this.$nextTick(() => {
-          this.msgShow=true
-          this.timer = setTimeout(() => {this.msgShow=false}, 3300)
-        })
-      }
     },
   }
 </script>

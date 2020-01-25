@@ -9,7 +9,14 @@ Vue.use(Vuex)
 const state = {
   user: ls.getItem('user'),
   //添加 auth 来保存当前用户的登录状态: 值为 true或false
-  auth: ls.getItem('auth') 
+  auth: ls.getItem('auth'),
+
+  loading:false,
+  alter: {
+    msg:'',
+    msgType:'info',
+    msgShow:true,
+  },
 }
 
 // 改变状态的方法，不可异步
@@ -21,7 +28,15 @@ const mutations = {
   UPDATE_AUTH(state, auth){
     state.auth = auth
     ls.setItem('auth', auth)
-  }
+  },
+
+  UPDATE_LOADING(state, loading) {
+    state.loading = loading
+  },
+  UPDATE_ALTER(state, alter) {
+    state.alter = alter
+  },
+
 }
 
 // 类似mutations 提交前面的mutations  调用方法：store.dispatch('login)
@@ -31,13 +46,20 @@ const actions = {
     commit('UPDATE_AUTH', true)
     router.push('/')
   },
-
   logout({ commit }){
     commit('UPDATE_AUTH', false)
     if(router.history.current.name !== 'Home') 
         router.push({name:'Home', params: {logout:true}})
+  },
+  updateAlter({state, commit}, alter){
+    const stateAlter = state.alter
+    if(stateAlter && typeof stateAlter === 'objects'){
+      alter = {...stateAlter, ...alter}
+    }
+    commit('UPDATE_ALTER', alter)
   }
-  
+
+
 }
 
 

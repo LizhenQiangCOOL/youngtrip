@@ -1,7 +1,6 @@
 <template>
   <div class="home">
-      <v-alert dismissible class="ma-1"  :type="msgType" :value="msgShow">{{msg}}</v-alert>
-
+    
       <Carousel/>
       <HomeCard/>
       <HomeCard/>
@@ -11,6 +10,8 @@
 
 <script>
 // @ is an alias to /src
+import { mapState } from 'vuex'
+
 import HelloWorld from '@/components/HelloWorld.vue'
 import Carousel from '@/components/Carousel';
 import HomeCard from '@/components/HomeCard'
@@ -23,9 +24,6 @@ export default {
     HomeCard
   },
   data: () => ({
-      msg:'',
-      msgType:'success',
-      msgShow:false,
   }),
   beforeRouteEnter (to, from, next) {
     const fromName = from.name
@@ -35,40 +33,37 @@ export default {
       if(vm.$store.state.auth){
         switch(fromName){
           case 'Register':
-            vm.showMsg('注册成功')
+            vm.$store.dispatch('updateAlter',{msg:'注册成功', msgType:'success', msgShow:true})
+            vm.timer = setTimeout(() => {vm.$store.dispatch('updateAlter',{msgShow:false}) }, 3300)
             break
           case 'Login':
-            vm.showMsg('登录成功')
+            vm.$store.dispatch('updateAlter',{msg:'登录成功', msgType:'success', msgShow:true})
+            vm.timer = setTimeout(() => {vm.$store.dispatch('updateAlter',{msgShow  :false}) }, 3300)
             break
         }
       } else if (logout){
-        vm.showMsg('操作成功')
+        vm.$store.dispatch('updateAlter',{msg:'操作成功', msgType:'success', msgShow:true})
+        vm.timer = setTimeout(() => {vm.$store.dispatch('updateAlter',{msgShow  :false}) }, 3300)
       }
     })
   },
-  computed:{
-    auth(){
-      return this.$store.state.auth
-    }
-  },
+
+    computed:{
+      // 使用对象展开运算符，将 mapState 对象混入到计算属性之中
+      ...mapState([
+        // 映射 this.auth 为 store.state.auth
+        'auth',
+      ])
+    },
+
   watch:{
     auth(value){
       if(!value){
-        this.showMsg('操作成功')
+        this.$store.dispatch('updateAlter',{msg:'操作成功', msgType:'success', msgShow:true})
+        this.timer = setTimeout(() => {this.$store.dispatch('updateAlter',{msgShow  :false}) }, 3300)
       }
     }
   },
-  methods:{
-     showMsg(msg, type = 'success'){
-        this.msg = msg
-        this.msgType = type
-        this.msgShow = false
-        this.$nextTick(() => {
-          this.msgShow=true
-          this.timer = setTimeout(() => {this.msgShow=false}, 3300)
-        })
-   }
-  }
 
 }
 </script>

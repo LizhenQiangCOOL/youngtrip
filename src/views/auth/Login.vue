@@ -1,7 +1,5 @@
 <template>
    <v-card class="mx-3 mt-5">
-       <v-alert dismissible  :type="msgType" :value="msgShow">{{msg}}</v-alert>
-
        <v-card-title class="d-flex justify-center">登录</v-card-title>
 
        <v-card-text> 
@@ -58,7 +56,9 @@
   import { required } from 'vuelidate/lib/validators'
   import ls from '@/utils/localStorage'
 
+
   export default {
+
     mixins: [validationMixin],
 
     validations: {
@@ -70,9 +70,6 @@
       name: '',
       password:'',
       showpassword:false,
-      msg:'',
-      msgType:'success',
-      msgShow:false,
     }),
     computed: {
       nameErrors () {
@@ -107,9 +104,11 @@
               this.$store.dispatch('login', response.data.data)
           }).catch( (error) => {
               if(error.response.status=='404' || error.response.status=='400'){
-                this.showMsg(error.response.data.msg, 'error')
+                this.$store.dispatch('updateAlter',{msg:error.response.data.msg, msgType:'error', msgShow:true})
+                this.timer = setTimeout(() => {this.$store.dispatch('updateAlter',{msgShow:false}) }, 3300)
               }else{
-                this.showMsg('网络错误', 'error')
+                this.$store.dispatch('updateAlter',{msg:'网络错误', msgType:'error', msgShow:true})
+                this.timer = setTimeout(() => {this.$store.dispatch('updateAlter',{msgShow:false}) }, 3300)
               }
           });
           
@@ -119,16 +118,6 @@
         this.name = ''
         this.password = ''
       },
-      showMsg(msg, type = 'warning'){
-        this.msg = msg
-        this.msgType = type
-        this.msgShow = false
-        this.$nextTick(() => {
-          this.msgShow=true
-          this.timer = setTimeout(() => {this.msgShow=false}, 3300)
-        })
-      }
-
     }
 
 }
