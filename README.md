@@ -1,3 +1,6 @@
+# 项目预览
+GithubPages：https://lizhenqiangcool.github.io/youngtrip/dist/
+
 # youngtrip
 
 ## Project setup

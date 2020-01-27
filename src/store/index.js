@@ -11,21 +11,21 @@ const state = {
   //添加 auth 来保存当前用户的登录状态: 值为 true或false
   auth: ls.getItem('auth'),
 
-  loading:false,
+  loading: false,
   alter: {
-    msg:'',
-    msgType:'info',
-    msgShow:true,
+    msg: '',
+    msgType: 'info',
+    msgShow: false,
   },
 }
 
 // 改变状态的方法，不可异步
 const mutations = {
-  UPDATE_USER(state, user){
+  UPDATE_USER(state, user) {
     state.user = user
     ls.setItem('user', user)
   },
-  UPDATE_AUTH(state, auth){
+  UPDATE_AUTH(state, auth) {
     state.auth = auth
     ls.setItem('auth', auth)
   },
@@ -41,24 +41,53 @@ const mutations = {
 
 // 类似mutations 提交前面的mutations  调用方法：store.dispatch('login)
 const actions = {
-  login({ commit }, user) {
+  login({
+    commit
+  }, user) {
     if (user) commit('UPDATE_USER', user)
     commit('UPDATE_AUTH', true)
     router.push('/')
   },
-  logout({ commit }){
+  logout({
+    commit
+  }) {
     commit('UPDATE_AUTH', false)
-    if(router.history.current.name !== 'Home') 
-        router.push({name:'Home', params: {logout:true}})
+    if (router.history.current.name !== 'Home')
+      router.push({
+        name: 'Home',
+        params: {
+          logout: true
+        }
+      })
   },
-  updateAlter({state, commit}, alter){
+  updateAlter({
+    state,
+    commit
+  }, alter) {
     const stateAlter = state.alter
-    if(stateAlter && typeof stateAlter === 'objects'){
-      alter = {...stateAlter, ...alter}
+    if (stateAlter && typeof stateAlter === 'objects') {
+      alter = {
+        ...stateAlter,
+        ...alter
+      }
     }
     commit('UPDATE_ALTER', alter)
+  },
+  updateUser({
+    state,
+    commit
+  }, user) {
+    const stateUser = state.user
+    if (stateUser && typeof stateUser === 'objects') {
+      //user = Object.assign({}, stateUser, user)
+      //后面user对象覆盖合并　stateUser对象
+      user = {
+        ...stateUser,
+        ...user
+      }
+    }
+    commit('UPDATE_USER', user)
   }
-
 
 }
 
@@ -67,5 +96,5 @@ export default new Vuex.Store({
   state,
   mutations,
   actions,
-  modules:{}
+  modules: {}
 })

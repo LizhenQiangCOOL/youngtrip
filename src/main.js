@@ -14,6 +14,13 @@ Vue.use(vueAxios, axios)
 
 Vue.config.productionTip = false
 
+// vue-router Uncaught(in promise)  (in promise) NavigationDuplicated {_name: "NavigationDuplicated", name: "NavigationDuplicated"}
+import Router from 'vue-router'
+const routerPush = Router.prototype.push
+Router.prototype.push = function push(location) {
+  return routerPush.call(this, location).catch(error=> error)
+}
+
 new Vue({
   router,
   store,
