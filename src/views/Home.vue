@@ -68,7 +68,8 @@ export default {
         avatar: "https://api.adorable.io/avatars/200/asfdafasdf.png",
         author: "小一爱客随"
       }
-    ]
+    ],
+    msgtimer:null,
   }),
 
   beforeRouteEnter(to, from, next) {
@@ -83,7 +84,7 @@ export default {
               msgType: "success",
               msgShow: true
             });
-            vm.timer = setTimeout(() => {
+            vm.msgtimer = setTimeout(() => {
               vm.$store.dispatch("updateAlter", { msgShow: false });
             }, 3300);
             break;
@@ -93,7 +94,7 @@ export default {
               msgType: "success",
               msgShow: true
             });
-            vm.timer = setTimeout(() => {
+            vm.msgtimer = setTimeout(() => {
               vm.$store.dispatch("updateAlter", { msgShow: false });
             }, 3300);
             break;
@@ -104,7 +105,7 @@ export default {
           msgType: "success",
           msgShow: true
         });
-        vm.timer = setTimeout(() => {
+        vm.msgtimer = setTimeout(() => {
           vm.$store.dispatch("updateAlter", { msgShow: false });
         }, 3300);
       }
@@ -126,7 +127,7 @@ export default {
           msgType: "success",
           msgShow: true
         });
-        this.timer = setTimeout(() => {
+        this.msgtimer = setTimeout(() => {
           this.$store.dispatch("updateAlter", { msgShow: false });
         }, 3300);
       }

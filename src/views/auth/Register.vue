@@ -114,8 +114,9 @@ export default {
     email: "",
     code: "",
     countdown: 30,
-    timer: "",
-    isShowGetCode: true
+    timer: null,
+    isShowGetCode: true,
+    msgtimer: null
   }),
 
   computed: {
@@ -191,7 +192,7 @@ export default {
               msgType: "error",
               msgShow: true
             });
-            this.timer = setTimeout(() => {
+            this.msgtimer = setTimeout(() => {
               this.$store.dispatch("updateAlter", { msgShow: false });
             }, 3300);
           } else {
@@ -200,7 +201,7 @@ export default {
               msgType: "error",
               msgShow: true
             });
-            this.timer = setTimeout(() => {
+            this.msgtimer = setTimeout(() => {
               this.$store.dispatch("updateAlter", { msgShow: false });
             }, 3300);
           }
@@ -215,12 +216,14 @@ export default {
     login(user) {
       this.$store.dispatch("login", user);
     },
-
     //验证码倒计时
     getIdentifyCode() {
-      //get code
-      this.countDown();
-      this.isShowGetCode = false;
+      this.$v.email.$touch();
+      if (!this.$v.email.$error) {
+        this.emailcodesend();
+        this.countDown();
+        this.isShowGetCode = false;
+      }
     },
     countDown() {
       const self = this;
@@ -232,7 +235,31 @@ export default {
           self.isShowGetCode = true;
         }
       }, 1000);
-    }
+    },
+    emailcodesend() {
+      this.axios
+        .post("/account/emailcodesend", { email: this.email })
+        .then(response => {
+          this.$store.dispatch("updateAlter", {
+            msg: response.data.msg,
+            msgType: "success",
+            msgShow: true
+          });
+          this.msgtimer = setTimeout(() => {
+            this.$store.dispatch("updateAlter", { msgShow: false });
+          }, 3300);
+        })
+        .catch(error => {
+          this.$store.dispatch("updateAlter", {
+            msg: error.response.data.msg || error,
+            msgType: "error",
+            msgShow: true
+          });
+          this.msgtimer = setTimeout(() => {
+            this.$store.dispatch("updateAlter", { msgShow: false });
+          }, 3300);
+        });
+    },
   }
 };
 </script>

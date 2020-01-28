@@ -5,7 +5,7 @@
       <form lazy-validation>
         <v-text-field v-model.trim="name" label="用户名" disabled></v-text-field>
 
-         <v-select
+        <v-select
           v-model="sex"
           :items="sexitems"
           :item-text="sexitems.text"
@@ -25,19 +25,24 @@
 <script>
 export default {
   data: () => ({
-    sexitems:[{
-      text:'未选择',
-      value:'0'
-    },{
-      text:'男',
-      value:'male'
-    },{
-      text:'女',
-      value:'female'
-    }],
-    sex:'0',
+    sexitems: [
+      {
+        text: "未选择",
+        value: "0"
+      },
+      {
+        text: "男",
+        value: "male"
+      },
+      {
+        text: "女",
+        value: "female"
+      }
+    ],
+    sex: "0",
     name: "",
-    sign: ""
+    sign: "",
+    msgtimer:null,
   }),
   created() {
     const user = this.$store.state.user;
@@ -47,37 +52,40 @@ export default {
   },
   methods: {
     updateuser() {
-      const id = this.$store.state.user.userinfo.id;
-      const params = {
-        sex: this.sex,
-        sign: this.sign
-      };
-      const headers = {
-        Authorization: `jwt ${this.$store.state.user.token}`
-      };
-      this.axios
-        .patch(`/account/user/${id}/`, params, { headers: headers })
-        .then(response => {
-          this.$store.dispatch("updateUser", response.data.data);
-          this.$store.dispatch("updateAlter", {
-            msg: response.data.msg,
-            msgType: "success",
-            msgShow: true
+      this.$v.$touch();
+      if (!this.$v.$error) {
+        const id = this.$store.state.user.userinfo.id;
+        const params = {
+          sex: this.sex,
+          sign: this.sign
+        };
+        const headers = {
+          Authorization: `jwt ${this.$store.state.user.token}`
+        };
+        this.axios
+          .patch(`/account/user/${id}/`, params, { headers: headers })
+          .then(response => {
+            this.$store.dispatch("updateUser", response.data.data);
+            this.$store.dispatch("updateAlter", {
+              msg: response.data.msg,
+              msgType: "success",
+              msgShow: true
+            });
+            this.msgtimer = setTimeout(() => {
+              this.$store.dispatch("updateAlter", { msgShow: false });
+            }, 3300);
+          })
+          .catch(error => {
+            this.$store.dispatch("updateAlter", {
+              msg: "修改失败",
+              msgType: "error",
+              msgShow: true
+            });
+            this.msgtimer = setTimeout(() => {
+              this.$store.dispatch("updateAlter", { msgShow: false });
+            }, 3300);
           });
-          this.timer = setTimeout(() => {
-            this.$store.dispatch("updateAlter", { msgShow: false });
-          }, 3300);
-        })
-        .catch(error => {
-          this.$store.dispatch("updateAlter", {
-            msg: "修改失败",
-            msgType: "error",
-            msgShow: true
-          });
-          this.timer = setTimeout(() => {
-            this.$store.dispatch("updateAlter", { msgShow: false });
-          }, 3300);
-        });
+      }
     }
   }
 };

@@ -38,7 +38,8 @@ export default {
   },
 
   data: () => ({
-    avatar: ""
+    avatar: "",
+    msgtimer:null,
   }),
   created() {
     const user = this.$store.state.user;
@@ -55,36 +56,39 @@ export default {
   },
   methods: {
     updateuser() {
-      const id = this.$store.state.user.userinfo.id;
-      const params = {
-        avatar: this.avatar,
-      };
-      const headers = {
-        Authorization: `jwt ${this.$store.state.user.token}`
-      };
-      this.axios
-        .patch(`/account/user/${id}/`, params, { headers: headers })
-        .then(response => {
-          this.$store.dispatch("updateUser", response.data.data);
-          this.$store.dispatch("updateAlter", {
-            msg: response.data.msg,
-            msgType: "success",
-            msgShow: true
+      this.$v.$touch();
+      if (!this.$v.$error) {
+        const id = this.$store.state.user.userinfo.id;
+        const params = {
+          avatar: this.avatar
+        };
+        const headers = {
+          Authorization: `jwt ${this.$store.state.user.token}`
+        };
+        this.axios
+          .patch(`/account/user/${id}/`, params, { headers: headers })
+          .then(response => {
+            this.$store.dispatch("updateUser", response.data.data);
+            this.$store.dispatch("updateAlter", {
+              msg: response.data.msg,
+              msgType: "success",
+              msgShow: true
+            });
+            this.msgtimer = setTimeout(() => {
+              this.$store.dispatch("updateAlter", { msgShow: false });
+            }, 3300);
+          })
+          .catch(error => {
+            this.$store.dispatch("updateAlter", {
+              msg: "修改失败",
+              msgType: "error",
+              msgShow: true
+            });
+            this.msgtimer = setTimeout(() => {
+              this.$store.dispatch("updateAlter", { msgShow: false });
+            }, 3300);
           });
-          this.timer = setTimeout(() => {
-            this.$store.dispatch("updateAlter", { msgShow: false });
-          }, 3300);
-        })
-        .catch(error => {
-          this.$store.dispatch("updateAlter", {
-            msg: "修改失败",
-            msgType: "error",
-            msgShow: true
-          });
-          this.timer = setTimeout(() => {
-            this.$store.dispatch("updateAlter", { msgShow: false });
-          }, 3300);
-        });
+      }
     }
   }
 };

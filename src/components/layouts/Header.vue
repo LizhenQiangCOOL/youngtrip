@@ -2,14 +2,15 @@
   <v-app-bar
     app
     flex
-    color="#fcb69f"
+    color="primary"
     dark
     src="https://picsum.photos/1920/1080?random"
     class="pt-1"
     width="100%"
+    height="45%"
   >
     <v-btn icon to="/">
-      <v-icon large>mdi-home</v-icon>
+      <v-icon size="32">mdi-home</v-icon>
     </v-btn>
 
     <v-toolbar-title>

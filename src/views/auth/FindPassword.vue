@@ -17,11 +17,11 @@
         <v-stepper-items>
           <v-stepper-content v-for="n in steps" :key="`${n}-content`" :step="n">
             <Email ref="email" v-if="n===1"></Email>
-
+            <Password ref="password" v-else cardtitle="找回密码--重置密码" :enSureBtn="false"></Password>
             <v-row v-if="n===1">
               <v-col class="d-flex justify-center">
                 <v-btn color="primary" @click="nextStep(n)">下一步</v-btn>
-                <v-btn text>取消</v-btn>
+                <v-btn text　to="/">取消</v-btn>
               </v-col>
             </v-row>
             <v-row v-else>
@@ -38,10 +38,13 @@
 
 <script>
 import Email from "@/views/auth/Email";
+import Password from "@/views/user/Password";
+import router from "@/router";
 
 export default {
   components: {
-    Email
+    Email,
+    Password
   },
 
   data() {
@@ -49,7 +52,8 @@ export default {
       e1: 1,
       steps: 2,
       altLabels: false,
-      editable: false
+      editable: false,
+      msgtimer:null,
     };
   },
 
@@ -66,35 +70,60 @@ export default {
   },
 
   methods: {
-    onInput(val) {
-      this.steps = parseInt(val);
-    },
     nextStep(n) {
       if (n === this.steps) {
-        //  　最终完成注册然后　跳转home
-        this.e1 = 1;
+        //  　最终完成找回面膜然后　跳转登录页面
+        if (this.$refs.password[0].getEerrors()) {
+          const params = this.$refs.password[0].getVals();
+          const id = this.$store.state.user.userinfo.id;
+          const headers = {
+            Authorization: `jwt ${this.$store.state.user.token}`
+          };
+          this.axios
+            .patch(`/account/user/${id}/`, params, { headers: headers })
+            .then(response => {
+              this.$store.dispatch("updateUser", response.data.data);
+              this.$store.dispatch("updateAlter", {
+                msg: "重置密码成功",
+                msgType: "success",
+                msgShow: true
+              });
+              this.msgtimer = setTimeout(() => {
+                this.$store.dispatch("updateAlter", { msgShow: false });
+              }, 3300);
+              router.push("/auth/login");
+            })
+            .catch(error => {
+              this.$store.dispatch("updateAlter", {
+                msg: "重置密码失败",
+                msgType: "error",
+                msgShow: true
+              });
+              this.msgtimer = setTimeout(() => {
+                this.$store.dispatch("updateAlter", { msgShow: false });
+              }, 3300);
+            });
+        }
       } else {
-        this.e1 = n + 1;
-        //　对邮箱进行验证
-        // if(this.$refs.email[0].getEerrors())
-        // {
-
-        //       this.axios.post(process.env.VUE_APP_APIURL+'/account/register/', this.$refs.email[0].getVals()).then((response) => {
-        //       this.axios.defaults.headers.common['Authorization'] = 'JWT '+ response.data.data.token
-        //       this.$store.dispatch('updateUser', response.data.data)　//保存一下data　id
-        //       console.log(response.data.data)
-
-        //     }).catch( (error) => {
-        //       if(error.response.status=='400'){
-        //         this.$store.dispatch('updateAlter',{msg:error.response.data.msg, msgType:'error', msgShow:true})
-        //         this.timer = setTimeout(() => {this.$store.dispatch('updateAlter',{msgShow:false}) }, 3300)
-        //       }else{
-        //         this.$store.dispatch('updateAlter',{msg:'网络错误', msgType:'error', msgShow:true})
-        //         this.timer = setTimeout(() => {this.$store.dispatch('updateAlter',{msgShow:false}) }, 3300)
-        //       }
-        //     })
-
-        // }
+        if (this.$refs.email[0].getEerrors()) {
+          const params = this.$refs.email[0].getVals();
+          this.axios
+            .post(`/account/emailcode`, params)
+            .then(response => {
+              this.$store.dispatch("updateUser", response.data.data);
+              this.e1 = n + 1;
+            })
+            .catch(error => {
+              this.$store.dispatch("updateAlter", {
+                msg: "验证邮箱失败",
+                msgType: "error",
+                msgShow: true
+              });
+              this.msgtimer = setTimeout(() => {
+                this.$store.dispatch("updateAlter", { msgShow: false });
+              }, 3300);
+            });
+        }
       }
     }
   }

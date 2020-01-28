@@ -66,7 +66,8 @@ export default {
   data: () => ({
     name: "",
     password: "",
-    showpassword: false
+    showpassword: false,
+    msgtimer:null,
   }),
   computed: {
     nameErrors() {
@@ -110,7 +111,7 @@ export default {
               msgType: "error",
               msgShow: true
             });
-            this.timer = setTimeout(() => {
+            this.msgtimer = setTimeout(() => {
               this.$store.dispatch("updateAlter", { msgShow: false });
             }, 3300);
           } else {
@@ -119,7 +120,7 @@ export default {
               msgType: "error",
               msgShow: true
             });
-            this.timer = setTimeout(() => {
+            this.msgtimer = setTimeout(() => {
               this.$store.dispatch("updateAlter", { msgShow: false });
             }, 3300);
           }
