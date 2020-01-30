@@ -1,9 +1,11 @@
 <template>
   <v-app>
     <Header />
-    <v-content id="main-trip">
-      <v-alert dismissible class="ma-2" :type="alter.msgType" :value="alter.msgShow">{{alter.msg}}</v-alert>
-      <router-view></router-view>
+    <v-content id="main-trip" class="d-flex">
+       <v-card elevation="0" max-width="740px" style="margin:0 auto">
+        <v-alert dismissible class="ma-2" :type="alter.msgType" :value="alter.msgShow">{{alter.msg}}</v-alert>
+        <router-view></router-view>
+       </v-card>
     </v-content>
     <Footer/>
   </v-app>
@@ -29,3 +31,6 @@ export default {
   data: () => ({})
 };
 </script>
+
+<style>
+</style>

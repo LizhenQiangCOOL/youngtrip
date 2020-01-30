@@ -67,7 +67,6 @@ export default {
     name: "",
     password: "",
     showpassword: false,
-    msgtimer:null,
   }),
   computed: {
     nameErrors() {

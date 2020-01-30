@@ -1,71 +1,51 @@
-<template>
-  <v-card class="mx-3 mt-4 ">
-    
-    <!-- <v-img :src="img" height="180" gradient="to left, rgba(100,115,201,.33), rgba(25,32,72,.7)">
+<template class="d-flex">
+  <v-card class="px-3 pt-4"  elevation="0" max-width="720px" style="margin:0 auto">
+    <v-img :src="img" height="30vh" gradient="to right, rgba(0, 0, 0, 0.5) 0%, transparent">
       <v-card-title class="font-weight-black white--text" v-text="title"></v-card-title>
-      <v-card-subtitle class=" HomeCard-detail font-weight-regular  white--text" >
-        {{subtitle}}
-        </v-card-subtitle>
+      <v-card-subtitle class="font-weight-regular body-2">
+        <v-card class="HomeCard-detail" color="transparent" elevation="0">
+          <span class="mx-2 white--text">{{subtitle}}</span>
+        </v-card>
+      </v-card-subtitle>
 
       <v-card-text class="HomeCard-bottom">
         <v-avatar size="30">
           <img :src="avatar" :alt="author" />
         </v-avatar>
-        <span class="ml-2 white--text font-weight-bold caption">
-          <i>by</i>
-          {{author}}
-        </span>
-      </v-card-text>
-    </v-img> -->
-
-      <v-img :src="img" height="180" gradient="to left, rgba(100,115,201,.33), rgba(25,32,72,.7)">
-      <v-card-title class="font-weight-black white--text" v-text="title"></v-card-title>
-      <v-card-subtitle class=" font-weight-regular body-2 " >
-          <v-card class="HomeCard-detail" color="transparent" elevation="0">
-            <span class="mx-2 white--text"> {{subtitle}}</span>
-          </v-card>
-        </v-card-subtitle>
-
-      <v-card-text class="HomeCard-bottom">
-        <v-avatar size="30">
-          <img :src="avatar" :alt="author" />
-        </v-avatar>
-        <span class="ml-2 white--text  font-weight-regular body-2">
+        <span class="ml-2 white--text font-weight-regular body-2">
           <i>by</i>
           {{author}}
         </span>
       </v-card-text>
     </v-img>
-
   </v-card>
 </template>
 
 <script>
 export default {
-  props:{
-    img:{
+  props: {
+    img: {
       type: String,
-      required:true,
+      required: true
     },
-    title:{
+    title: {
       type: String,
-      required:true,
+      required: true
     },
-    subtitle:{
+    subtitle: {
       type: String,
-      required:true,
+      required: true
     },
-    avatar:{
+    avatar: {
       type: String,
-      required:true,
+      required: true
     },
-    author:{
+    author: {
       type: String,
-      required:true,
+      required: true
     }
   },
-  data: () => ({
-  })
+  data: () => ({})
 };
 </script>
 
@@ -84,9 +64,8 @@ export default {
 
 .HomeCard-bottom {
   position: absolute;
-  bottom: 11px;
+  bottom: 0px;
   left: 0;
   font-size: 1rem;
 }
-
 </style>

@@ -116,7 +116,6 @@ export default {
     countdown: 30,
     timer: null,
     isShowGetCode: true,
-    msgtimer: null
   }),
 
   computed: {
@@ -159,7 +158,6 @@ export default {
       return errors;
     }
   },
-
   methods: {
     register() {
       this.$v.$touch();

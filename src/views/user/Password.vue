@@ -64,7 +64,6 @@ export default {
     repassword: "",
     showpassword: false,
     showrepassword: false,
-    msgtimer:null,
   }),
   computed: {
     passwordErrors() {
@@ -83,7 +82,6 @@ export default {
       return errors;
     }
   },
-
   methods: {
     updateuser() {
       this.$v.$touch();

@@ -53,7 +53,6 @@ export default {
       steps: 2,
       altLabels: false,
       editable: false,
-      msgtimer:null,
     };
   },
 
@@ -68,7 +67,6 @@ export default {
       requestAnimationFrame(() => (this.e1 = 1)); // Workarounds
     }
   },
-
   methods: {
     nextStep(n) {
       if (n === this.steps) {

@@ -31,6 +31,14 @@ export default {
       {
         img:
           "http://photos.breadtrip.com/photo_2019_10_15_a62a735bac66d94567b709f570194f92.jpg?imageView/1/w/640/h/480/q/85",
+        title: "🇺🇸新墨西哥州Albuquerque# 浪漫的热气球节和似雪的白色沙滩🎈",
+        subtitle: "2019.10.1   9025浏览",
+        avatar: "https://api.adorable.io/avatars/200/asfdafasdf.png",
+        author: "小一爱客随"
+      },
+      {
+        img:
+          "http://photos.breadtrip.com/photo_2019_10_31_c26207f514c82339d22a3a88912f0ea6.jpg?imageView/1/w/640/h/480/q/85",
         title: "非洲海岛流浪记🇲🇺毛里求斯cdn",
         subtitle: "2019.10.1   9025浏览",
         avatar: "https://api.adorable.io/avatars/200/asfdafasdf.png",
@@ -38,7 +46,7 @@ export default {
       },
       {
         img:
-          "http://photos.breadtrip.com/photo_2019_10_15_a62a735bac66d94567b709f570194f92.jpg?imageView/1/w/640/h/480/q/85",
+          "http://photos.breadtrip.com/photo_2019_12_11_33d7de2dd10931d698f65389a5693fc4.jpg?imageView/1/w/640/h/480/q/85",
         title: "非洲海岛流浪记🇲🇺毛里求斯cdn",
         subtitle: "2019.10.1   9025浏览",
         avatar: "https://api.adorable.io/avatars/200/asfdafasdf.png",
@@ -46,7 +54,7 @@ export default {
       },
       {
         img:
-          "http://photos.breadtrip.com/photo_2019_10_15_a62a735bac66d94567b709f570194f92.jpg?imageView/1/w/640/h/480/q/85",
+          "http://photos.breadtrip.com/photo_2018_02_18_5e2813ae58c7a944a6622e0dde820c4c.jpg?imageView/1/w/640/h/480/q/85",
         title: "非洲海岛流浪记🇲🇺毛里求斯cdn",
         subtitle: "2019.10.1   9025浏览",
         avatar: "https://api.adorable.io/avatars/200/asfdafasdf.png",
@@ -54,22 +62,13 @@ export default {
       },
       {
         img:
-          "http://photos.breadtrip.com/photo_2019_10_15_a62a735bac66d94567b709f570194f92.jpg?imageView/1/w/640/h/480/q/85",
-        title: "非洲海岛流浪记🇲🇺毛里求斯cdn",
-        subtitle: "2019.10.1   9025浏览",
-        avatar: "https://api.adorable.io/avatars/200/asfdafasdf.png",
-        author: "小一爱客随"
-      },
-      {
-        img:
-          "http://photos.breadtrip.com/photo_2019_10_15_a62a735bac66d94567b709f570194f92.jpg?imageView/1/w/640/h/480/q/85",
+          "http://photos.breadtrip.com/photo_2019_12_29_d84e13c3d374449b8be03e939b4cbe33.jpg?imageView/2/w/1384/h/1384/q/85",
         title: "非洲海岛流浪记🇲🇺毛里求斯cdn",
         subtitle: "2019.10.1   9025浏览",
         avatar: "https://api.adorable.io/avatars/200/asfdafasdf.png",
         author: "小一爱客随"
       }
     ],
-    msgtimer:null,
   }),
 
   beforeRouteEnter(to, from, next) {
@@ -135,3 +134,6 @@ export default {
   }
 };
 </script>
+
+<style>
+</style>

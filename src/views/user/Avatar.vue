@@ -39,7 +39,6 @@ export default {
 
   data: () => ({
     avatar: "",
-    msgtimer:null,
   }),
   created() {
     const user = this.$store.state.user;
@@ -95,4 +94,5 @@ export default {
 </script>
 
 <style>
+
 </style>

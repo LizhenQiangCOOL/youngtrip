@@ -42,7 +42,6 @@ export default {
     sex: "0",
     name: "",
     sign: "",
-    msgtimer:null,
   }),
   created() {
     const user = this.$store.state.user;
