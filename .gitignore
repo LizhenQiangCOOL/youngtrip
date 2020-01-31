@@ -3,9 +3,9 @@ node_modules
 data
 
 # local env files
-.env
-.env.local
-.env.*.local
+# .env
+# .env.local
+# .env.*.local
 
 # Log files
 npm-debug.log*
