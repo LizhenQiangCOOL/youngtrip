@@ -65,7 +65,7 @@ const actions = {
     commit
   }, alter) {
     const stateAlter = state.alter
-    if (stateAlter && typeof stateAlter === 'objects') {
+    if (stateAlter && typeof stateAlter === 'object') {
       alter = {
         ...stateAlter,
         ...alter
@@ -78,13 +78,14 @@ const actions = {
     commit
   }, user) {
     const stateUser = state.user
-    if (stateUser && typeof stateUser === 'objects') {
+    if (stateUser && typeof stateUser === 'object') {
       //user = Object.assign({}, stateUser, user)
       //后面user对象覆盖合并　stateUser对象
       user = {
         ...stateUser,
         ...user
       }
+
     }
     commit('UPDATE_USER', user)
   }

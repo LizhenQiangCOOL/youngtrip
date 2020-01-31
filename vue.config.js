@@ -15,13 +15,13 @@ module.exports = {
     open: true,
     proxy:{
       //　配置跨域
-      'api':{
-        target:'http:/47.100.89.30/api/',
+      '/':{
+        target:'http://47.100.89.30/api',
         ws:true,
         changeOrigin: true,
-        pathRewrite:{
-          '^/api':''
-        }
+        // pathRewrite:{
+        //   '^/api':''
+        // }
       }
     },
     // //自己创建接口，用来mock数据的

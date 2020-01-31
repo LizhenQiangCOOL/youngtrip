@@ -51,8 +51,6 @@ export default {
   },
   methods: {
     updateuser() {
-      this.$v.$touch();
-      if (!this.$v.$error) {
         const id = this.$store.state.user.userinfo.id;
         const params = {
           sex: this.sex,
@@ -84,7 +82,7 @@ export default {
               this.$store.dispatch("updateAlter", { msgShow: false });
             }, 3300);
           });
-      }
+      
     }
   }
 };

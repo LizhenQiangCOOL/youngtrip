@@ -96,6 +96,7 @@ export default {
         this.axios
           .patch(`/account/user/${id}/`, params, { headers: headers })
           .then(response => {
+
             this.$store.dispatch("updateUser", response.data.data);
             this.$store.dispatch("updateAlter", {
               msg: response.data.msg,
