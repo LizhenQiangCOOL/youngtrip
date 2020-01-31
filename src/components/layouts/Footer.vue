@@ -27,12 +27,12 @@
             {
                 name:'喜欢',
                 icon:'mdi-cards-heart',
-                to:'/user/edit',
+                to:'',
             },
             {
                 name:'个人',
                 icon:'mdi-account-box',
-                to:'/user/edit',
+                to:'',
             }
         ],
       }

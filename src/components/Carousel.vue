@@ -20,9 +20,6 @@ export default {
         {
           src: "http://photos.breadtrip.com/covers_2019_01_25_b3df653037bcf7b8aeaa6a3bb2355974.jpg?imageView/2/w/960/"
         },
-        {
-          src:"http://photos.breadtrip.com/covers_2019_07_18_c19646d22d89ba04a0884f493f737c4a.jpg?imageView/2/w/960/"
-        }
       ]
     };
   }
