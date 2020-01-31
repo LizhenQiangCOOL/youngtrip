@@ -100,7 +100,7 @@ export default {
       alphaNum
     },
     password: { required, maxLength: maxLength(16), minLength: minLength(6) },
-    repassword: { required, maxLength: maxLength(16), minLength: minLength(6) },
+    repassword: { required, sameAsPassword:sameAs('password')},
     email: { required, email },
     code: { required, numeric }
   },
@@ -139,8 +139,7 @@ export default {
     repasswordErrors() {
       const errors = [];
       if (!this.$v.repassword.$dirty) return errors;
-      !(this.$v.password.$model === this.$v.repassword.$model) &&
-        errors.push("输入的该项不匹配");
+      !this.$v.repassword.sameAsPassword && errors.push("输入的该项不匹配");
       return errors;
     },
     emailErrors() {
