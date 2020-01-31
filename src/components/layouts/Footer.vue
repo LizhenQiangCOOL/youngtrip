@@ -25,8 +25,8 @@
                 to:'/',
             },
             {
-                name:'注意',
-                icon:'mdi-shield-cross',
+                name:'喜欢',
+                icon:'mdi-cards-heart',
                 to:'/user/edit',
             },
             {
