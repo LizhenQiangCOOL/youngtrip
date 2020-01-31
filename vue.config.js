@@ -16,7 +16,7 @@ module.exports = {
     proxy:{
       //　配置跨域
       'api':{
-        target:'http://xn--vur.top:8000/api/',
+        target:'http:/47.100.89.30/api/',
         ws:true,
         changeOrigin: true,
         pathRewrite:{
