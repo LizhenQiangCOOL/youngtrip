@@ -66,7 +66,7 @@ export default {
   data: () => ({
     name: "",
     password: "",
-    showpassword: false,
+    showpassword: false
   }),
   computed: {
     nameErrors() {
@@ -102,8 +102,8 @@ export default {
         })
         .catch(error => {
           if (
-            error.response.status == "404" ||
-            error.response.status == "400"
+            error.response.status &&
+            (error.response.status == "404" || error.response.status == "400")
           ) {
             this.$store.dispatch("updateAlter", {
               msg: error.response.data.msg,

@@ -79,7 +79,7 @@ export default {
           })
           .catch(error => {
             this.$store.dispatch("updateAlter", {
-              msg: "修改失败",
+              msg: "上传失败",
               msgType: "error",
               msgShow: true
             });

@@ -3,7 +3,8 @@ import Home from '../views/Home.vue'
 export default [{
         path: '/',
         name: 'Home',
-        component: Home
+        // component: Home
+        component:() =>import('@/views/Home.vue')
     },
     {
         path: '/auth/login',
@@ -23,7 +24,8 @@ export default [{
     {
         path: '/user/edit',
         name: 'edit',
-        component: () => import('@/views/user/Edit')
+        component: () => import('@/views/user/Edit'),
+        meta: {auth:true}
     },
 
     {

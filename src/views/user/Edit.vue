@@ -45,12 +45,6 @@ export default {
       }
     ]
   }),
-  beforeRouteEnter(to, from, next) {
-    next(vm => {
-    　//没登录　防止修改个人信息
-      if (!vm.$store.state.auth) next(from);
-    });
-  }
 };
 </script>
 
