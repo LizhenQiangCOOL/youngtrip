@@ -60,6 +60,7 @@ export default {
   name: "Header",
   data: () => ({
     items: [
+      { title: "游记", icon: "mdi-format-list-bulleted"},
       { title: "个人", icon: "mdi-account-edit" },
       { title: "退出", icon: "mdi-account-off" }
     ]
@@ -76,9 +77,9 @@ export default {
 
   methods: {
     memuclick(index) {
-      if (index === 0) {
+      if (index === 1) {
         router.push("/user/edit");
-      } else if (index === 1) {
+      } else if (index === 2) {
         this.logout();
       }
     },

@@ -10,6 +10,19 @@
       :avatar="homecard.avatar"
       :author="homecard.author"
     ></HomeCard>
+
+      <v-speed-dial
+          fixed
+          bottom
+          right
+          value="true"
+          >
+          <v-btn color="pink" fab
+          style="position:relative; top:-25px; left:-25px"
+          to="/cards/create"
+          ><v-icon>mdi-plus</v-icon></v-btn>
+      </v-speed-dial>
+
   </div>
 </template>
 

@@ -14,7 +14,7 @@
           chips
         ></v-select>
 
-        <v-textarea solo label="个性签名" messages="个性签名" clearable counter="100" v-model="sign"></v-textarea>
+        <v-textarea solo label="个性签名" messages="个性签名" clearable counter="100" v-model.trim="sign"></v-textarea>
 
         <v-btn color="success" @click="updateuser()">应用修改</v-btn>
       </form>

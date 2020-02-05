@@ -86,7 +86,8 @@ import {
   minLength,
   alphaNum,
   email,
-  numeric
+  numeric,
+  sameAs
 } from "vuelidate/lib/validators";
 
 export default {
@@ -117,7 +118,9 @@ export default {
     timer: null,
     isShowGetCode: true,
   }),
-
+  created(){
+    console.log('test')
+  },
   computed: {
     nameErrors() {
       const errors = [];

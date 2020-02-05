@@ -1,6 +1,9 @@
 # 项目预览
 GithubPages：https://lizhenqiangcool.github.io/youngtrip/dist/
 
+# 后端 docker-compose部署在阿里云
+Django + DRF + celery+ flow + redis + rabbitmq
+
 # youngtrip
 
 ## Project setup
