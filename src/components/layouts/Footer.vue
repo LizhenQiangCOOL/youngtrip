@@ -32,7 +32,7 @@
             {
                 name:'个人',
                 icon:'mdi-account-box',
-                to:'',
+                to:`/user/edit`,
             }
         ],
       }

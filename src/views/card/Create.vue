@@ -1,6 +1,6 @@
 <template>
   <v-card class="mx-3 mt-4">
-    <v-card-title class="d-flex justify-center">记录游记</v-card-title>
+    <v-card-title class="d-flex justify-center">{{id ? '修改游记' : '记录游记'}}</v-card-title>
     <v-card-text>
       <form lazy-validation>
         <v-text-field

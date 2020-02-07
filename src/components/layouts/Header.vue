@@ -60,7 +60,7 @@ export default {
   name: "Header",
   data: () => ({
     items: [
-      { title: "游记", icon: "mdi-format-list-bulleted"},
+      { title: "游记", icon: "mdi-format-list-bulleted" },
       { title: "个人", icon: "mdi-account-edit" },
       { title: "退出", icon: "mdi-account-off" }
     ]
@@ -81,6 +81,15 @@ export default {
         router.push("/user/edit");
       } else if (index === 2) {
         this.logout();
+      } else if (index === 0) {
+        this.$router.push({
+          name: "Column",
+          params: {
+            user: this.user.userinfo.id,
+            name: this.user.userinfo.user.username,
+            avatar: this.user.userinfo.avatar
+          }
+        });
       }
     },
     logout() {

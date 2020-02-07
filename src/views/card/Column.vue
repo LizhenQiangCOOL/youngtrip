@@ -1,7 +1,10 @@
 <template>
-  <div class="home">
-    <Carousel />
-     <HomeCard
+  <v-card elevation="0">
+    <SelfHeader :id="uid" :avatar="uavatar" :author="uname" />
+    <v-card-text class="subtitle-1" style="padding-bottom:0">
+      <v-badge color="green" :content="count">你の游记</v-badge>
+    </v-card-text>
+    <HomeCard
       v-for="card in homecardsItems"
       :key="card.id"
       :id="card.id"
@@ -11,38 +14,56 @@
       :avatar="card.userprofile.avatar"
       :author="card.userprofile.username"
       :uid="card.userprofile.id"
-      :avatarhidden="false"
+      :avatarhidden="true"
     ></HomeCard>
-
-      <v-speed-dial
-          fixed
-          bottom
-          right
-          value="true"
-          >
-          <v-btn color="pink" fab
-          style="position:relative; top:-25px; left:-25px"
-          to="/cards/create"
-          ><v-icon>mdi-plus</v-icon></v-btn>
-      </v-speed-dial>
- <!-- to="/cards/1/content" -->
-  </div>
+  </v-card>
 </template>
 
 <script>
-// @ is an alias to /src
 import { mapState } from "vuex";
 
-import Carousel from "@/components/Carousel";
 import HomeCard from "@/components/HomeCard";
-
+import SelfHeader from "@/views/user/SelfHeader";
 export default {
-  name: "home",
   components: {
-    Carousel,
-    HomeCard
+    HomeCard,
+    SelfHeader
+  },
+  created() {
+    //  个人信息直接路由传递
+    this.uid = this.$route.params.user;
+    this.uavatar = this.$route.params.avatar;
+    this.uname = this.$route.params.name;
+    //　个人游记数据请求
+    this.axios
+      .get(`/card/?page=1&page_size=9999999`)
+      .then(response => {
+        let obj = response.data;
+        this.count = obj.count;
+        this.next = obj.next;
+        this.previous = obj.previous;
+        this.cards = obj.results;
+      })
+      .catch(error => {
+        this.$store.dispatch("updateAlter", {
+          msg: "查看失败, 请稍后重试",
+          msgType: "error",
+          msgShow: true
+        });
+        this.msgtimer = setTimeout(() => {
+          this.$store.dispatch("updateAlter", { msgShow: false });
+        }, 3300);
+      });
   },
   data: () => ({
+    uid: null,
+    uavatar: null,
+    uname: null,
+
+    count: null,
+    next: null,
+    previous: null,
+    cards: null,
     homecardsItems: [
       {
         id: 1,
@@ -107,67 +128,7 @@ export default {
     ]
   }),
 
-  beforeRouteEnter(to, from, next) {
-    const fromName = from.name;
-    const logout = to.params.logout;
-    next(vm => {
-      if (vm.$store.state.auth) {
-        switch (fromName) {
-          case "Register":
-            vm.$store.dispatch("updateAlter", {
-              msg: "注册成功",
-              msgType: "success",
-              msgShow: true
-            });
-            vm.msgtimer = setTimeout(() => {
-              vm.$store.dispatch("updateAlter", { msgShow: false });
-            }, 3300);
-            break;
-          case "Login":
-            vm.$store.dispatch("updateAlter", {
-              msg: "登录成功",
-              msgType: "success",
-              msgShow: true
-            });
-            vm.msgtimer = setTimeout(() => {
-              vm.$store.dispatch("updateAlter", { msgShow: false });
-            }, 3300);
-            break;
-        }
-      } else if (logout) {
-        vm.$store.dispatch("updateAlter", {
-          msg: "操作成功",
-          msgType: "success",
-          msgShow: true
-        });
-        vm.msgtimer = setTimeout(() => {
-          vm.$store.dispatch("updateAlter", { msgShow: false });
-        }, 3300);
-      }
-    });
-  },
-
-  computed: {
-    // 使用对象展开运算符，将 mapState 对象混入到计算属性之中
-    ...mapState([
-      // 映射 this.auth 为 store.state.auth
-      "auth"
-    ])
-  },
-  watch: {
-    auth(value) {
-      if (!value) {
-        this.$store.dispatch("updateAlter", {
-          msg: "操作成功",
-          msgType: "success",
-          msgShow: true
-        });
-        this.msgtimer = setTimeout(() => {
-          this.$store.dispatch("updateAlter", { msgShow: false });
-        }, 3300);
-      }
-    }
-  }
+  methods: {}
 };
 </script>
 

@@ -19,16 +19,16 @@
 
       <v-row>
         <v-col class="d-flex justify-center">
-          <h2>{{title}}</h2>
+          <span class="title">{{title}}</span>
         </v-col>
       </v-row>
       <v-divider></v-divider>
       <v-row>
         <v-col cols="6">
-          <h2>{{date}}</h2>
+          <v-icon size="28" class="mr-1">mdi-calendar</v-icon><span class="subtitle-2">{{date}}</span>
         </v-col>
         <v-col cols="6">
-          <h2>{{location}}</h2>
+          <v-icon size="28" class="mr-1">mdi-earth</v-icon><span class="subtitle-2">{{location}}</span>
         </v-col>
       </v-row>
       <div class="photo-ctn">
@@ -52,7 +52,7 @@
         <div class="text--primary">{{content}}</div>
       </v-card-text>
 
-      <v-row>
+      <v-row v-show="uid===this.$store.state.user.userinfo.id">
         <v-col>
           <v-btn icon @click="editcard">
             <v-icon>mdi-content-save-edit</v-icon>
@@ -87,13 +87,10 @@ export default {
   }),
   created() {
     const cardId = this.$route.params.cardId;
-    const headers = {
-      Authorization: `jwt ${this.$store.state.user.token}`
-    };
     this.axios
-      .get(`/card/${cardId}/`, { headers: headers })
+      .get(`/card/${cardId}/`)
       .then(response => {
-        let obj = response.data.data;
+        let obj = response.data;
         this.uid = obj.userprofile.id;
         this.uavatar = obj.userprofile.avatar;
         this.uname = obj.userprofile.username;
@@ -106,7 +103,7 @@ export default {
       })
       .catch(error => {
         this.$store.dispatch("updateAlter", {
-          msg: "网络异常, 查看失败",
+          msg: "查看失败",
           msgType: "error",
           msgShow: true
         });

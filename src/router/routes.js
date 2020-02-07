@@ -45,6 +45,11 @@ export default [{
         component:() => import('@/views/card/Create'),
         meta: {auth:true}
     },
+    {
+        path:'/:user',
+        name:'Column',
+        component: () => import('@/views/card/Column')
+    },
 
     {
         path: '*',
