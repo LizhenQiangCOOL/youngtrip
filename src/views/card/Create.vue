@@ -3,16 +3,43 @@
     <v-card-title class="d-flex justify-center">记录游记</v-card-title>
     <v-card-text>
       <form lazy-validation>
-        <v-text-field v-model.trim="title" label="标题"></v-text-field>
+        <v-text-field
+          v-model.trim="title"
+          :error-messages="titleErrors"
+          label="标题"
+          :counter="80"
+          required
+          clearable
+          @blur="$v.title.$touch()"
+        ></v-text-field>
         <v-file-input
+          v-if="!pichidden"
           v-model="pic"
           accept="image/*"
           show-size
           label="封面图"
           prepend-icon="mdi-camera"
+          required
         ></v-file-input>
-        <v-textarea solo label="内容" messages="内容" clearable counter="300" v-model.trim="content"></v-textarea>
-        <v-text-field v-model.trim="location" label="地点"></v-text-field>
+        <v-textarea
+          solo
+          label="内容"
+          messages="内容"
+          required
+          clearable
+          counter="300"
+          v-model.trim="content"
+          :error-messages="contentErrors"
+          @blur="$v.content.$touch()"
+        ></v-textarea>
+        <v-text-field
+          v-model.trim="location"
+          label="地点"
+          required
+          clearable
+          :error-messages="locationErrors"
+          @blur="$v.location.$touch()"
+        ></v-text-field>
         <v-menu
           ref="menu"
           v-model="menu"
@@ -25,10 +52,11 @@
           <template v-slot:activator="{ on }">
             <v-text-field
               v-model="date"
-              label="Picker in menu"
+              label="时间"
               prepend-icon="event"
               readonly
               v-on="on"
+              required
             ></v-text-field>
           </template>
           <v-date-picker v-model="date" no-title scrollable>
@@ -49,21 +77,185 @@
 </template>
 
 <script>
+import { validationMixin } from "vuelidate";
+import { required, maxLength } from "vuelidate/lib/validators";
+
 export default {
+  mixins: [validationMixin],
+  validations: {
+    title: {
+      required,
+      maxLength: maxLength(80)
+    },
+    content: { required, maxLength: maxLength(300) },
+    location: { required, maxLength: maxLength(50) }
+  },
   data: () => ({
+    id: null,
     title: "",
     pic: null,
     content: "",
     location: "",
     date: new Date().toISOString().substr(0, 10),
-    menu: false
+    menu: false,
+    pichidden: false
   }),
-
-  methods:{
-      cardcreate(){
-          console.log(this.title, this.pic, this.content, this.location, this.date)
-      }
+  beforeRouteLeave(to, from, next) {
+    this.clearData();
+    next();
   },
+  created() {
+    const cardId = this.$route.params.cardId || null;
+    if (cardId !== null) {
+      this.id = cardId;
+      this.pic = null;
+      this.pichidden = true;
+      const headers = {
+        Authorization: `jwt ${this.$store.state.user.token}`
+      };
+      this.axios
+        .get(`/card/${cardId}/`, { headers: headers })
+        .then(response => {
+          let obj = response.data.data;
+          this.title = obj.title;
+          this.content = obj.content;
+          this.location = obj.location;
+          this.date = obj.date;
+        })
+        .catch(error => {
+          this.$store.dispatch("updateAlter", {
+            msg: "网络异常",
+            msgType: "error",
+            msgShow: true
+          });
+          this.msgtimer = setTimeout(() => {
+            this.$store.dispatch("updateAlter", { msgShow: false });
+          }, 3300);
+          this.$router.back(-1);
+        });
+    }
+  },
+  computed: {
+    titleErrors() {
+      const errors = [];
+      if (!this.$v.title.$dirty) return errors;
+      !this.$v.title.required && errors.push("标题必填");
+      !this.$v.title.maxLength && errors.push("标题最长80字符串");
+      return errors;
+    },
+    contentErrors() {
+      const errors = [];
+      if (!this.$v.content.$dirty) return errors;
+      !this.$v.content.required && errors.push("内容必填");
+      !this.$v.content.maxLength && errors.push("内容最长300字符串");
+      return errors;
+    },
+    locationErrors() {
+      const errors = [];
+      if (!this.$v.location.$dirty) return errors;
+      !this.$v.location.required && errors.push("地点必填");
+      !this.$v.location.maxLength && errors.push("地点最长50字符串");
+      return errors;
+    }
+  },
+  methods: {
+    filetoDataURL(file, fn) {
+      var reader = new FileReader();
+      reader.onloadend = function(e) {
+        fn(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    },
+    cardcreate() {
+      this.$v.$touch();
+      if (!this.$v.$error) {
+        this.$nextTick(() => {
+          this.submit();
+        });
+      }
+    },
+    submit() {
+      if (this.id === null) {
+        let formData = new FormData();
+        formData.append("userprofile", this.$store.state.user.userinfo.id);
+        formData.append("title", this.title);
+        formData.append("pic", this.pic);
+        formData.append("content", this.content);
+        formData.append("location", this.location);
+        formData.append("date", this.date);
+        const headers = {
+          Authorization: `jwt ${this.$store.state.user.token}`,
+          "Content-Type": "multipart/form-data"
+        };
+        this.axios
+          .post(`/card/`, formData, { headers: headers })
+          .then(response => {
+            this.$store.dispatch("updateAlter", {
+              msg: response.data.msg,
+              msgType: "success",
+              msgShow: true
+            });
+            this.msgtimer = setTimeout(() => {
+              this.$store.dispatch("updateAlter", { msgShow: false });
+            }, 3300);
+            this.$router.push({ name: 'Content', params: { cardId:response.data.data.id } })
+          })
+          .catch(error => {
+            this.$store.dispatch("updateAlter", {
+              msg: "记录游记失败",
+              msgType: "error",
+              msgShow: true
+            });
+            this.msgtimer = setTimeout(() => {
+              this.$store.dispatch("updateAlter", { msgShow: false });
+            }, 3300);
+          });
+      } else {
+        const card = {
+          title: this.title,
+          content: this.content,
+          location: this.location,
+          date: this.date
+        };
+        const headers = {
+          Authorization: `jwt ${this.$store.state.user.token}`
+        };
+        this.axios
+          .patch(`/card/${this.id}/`, card, { headers: headers })
+          .then(response => {
+            this.$store.dispatch("updateAlter", {
+              msg: response.data.msg,
+              msgType: "success",
+              msgShow: true
+            });
+            this.msgtimer = setTimeout(() => {
+              this.$store.dispatch("updateAlter", { msgShow: false });
+            }, 3300);
+            this.$router.push({ name: 'Content', params: { cardId:this.id } })
+          })
+          .catch(error => {
+            this.$store.dispatch("updateAlter", {
+              msg: "修改失败",
+              msgType: "error",
+              msgShow: true
+            });
+            this.msgtimer = setTimeout(() => {
+              this.$store.dispatch("updateAlter", { msgShow: false });
+            }, 3300);
+          });
+      }
+    },
+    clearData() {
+      this.id = null;
+      this.title = "";
+      this.pic = null;
+      this.content = "";
+      this.location = "";
+      this.date = new Date().toISOString().substr(0, 10);
+      this.menu = false;
+      this.pichidden = false;
+    }
+  }
 };
 </script>
 

@@ -30,9 +30,22 @@ export default [{
     {
         path: '/cards/create',
         name: 'Create',
-        component:() => import('@/views/card/Content'),
+        component:() => import('@/views/card/Create'),
         meta: {auth:true}
     },
+    {
+        path:'/cards/:cardId/content',
+        name:'Content',
+        component: () => import('@/views/card/Content'),
+        meta: {auth:true}
+    },
+    {
+        path:'/cards/:cardId/edit',
+        name:'Edit',
+        component:() => import('@/views/card/Create'),
+        meta: {auth:true}
+    },
+
     {
         path: '*',
         redirect: '/'

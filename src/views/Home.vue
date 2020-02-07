@@ -22,7 +22,7 @@
           to="/cards/create"
           ><v-icon>mdi-plus</v-icon></v-btn>
       </v-speed-dial>
-
+ <!-- to="/cards/1/content" -->
   </div>
 </template>
 

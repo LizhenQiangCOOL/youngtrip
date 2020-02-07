@@ -4,8 +4,8 @@
       <v-row>
         <v-col class="d-flex justify-center">
           <v-btn icon>
-            <v-avatar v-on="on" size="60">
-              <img src="https://api.adorable.io/avatars/200/admin.png" alt />
+            <v-avatar size="60">
+              <img :src="uavatar" alt />
             </v-avatar>
           </v-btn>
         </v-col>
@@ -14,34 +14,27 @@
         <v-col
           class="d-flex justify-center"
           style="font-size: 12px;color: #999;padding-top:20px;"
-        >by name</v-col>
+        >by {{ uname }}</v-col>
       </v-row>
 
       <v-row>
         <v-col class="d-flex justify-center">
-          <h2>标题</h2>
+          <h2>{{title}}</h2>
         </v-col>
       </v-row>
       <v-divider></v-divider>
       <v-row>
         <v-col cols="6">
-          <h2>时间</h2>
+          <h2>{{date}}</h2>
         </v-col>
         <v-col cols="6">
-          <h2>地点</h2>
+          <h2>{{location}}</h2>
         </v-col>
       </v-row>
       <div class="photo-ctn">
         <v-img
           src="http://photos.breadtrip.com/photo_2019_10_13_0eac9e3e0592219ae5c8cf068b63078b.jpg?imageView/2/w/640/q/85"
         ></v-img>
-
-        <div class="photo-mask">
-          <div class="photo-mask-left float-left"></div>
-          <div class="photo-mask-arrow-left float-left"></div>
-          <div class="photo-mask-arrow-right float-left"></div>
-          <div class="photo-mask-right float-left"></div>
-        </div>
         <div class="wp-btns">
           <a class="comment-btn">
             <i class="icon-comment"></i>
@@ -54,7 +47,21 @@
           </a>
         </div>
       </div>
-      <!-- <v-textarea solo label="内容" messages="内容" clearable counter="300" v-model.trim="content"></v-textarea> -->
+
+      <v-card-text>
+        <div class="text--primary">{{content}}</div>
+      </v-card-text>
+
+      <v-row>
+        <v-col>
+          <v-btn icon @click="editcard">
+            <v-icon>mdi-content-save-edit</v-icon>
+          </v-btn>
+          <v-btn icon @click="delcard">
+            <v-icon>mdi-delete</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
     </v-card-text>
   </v-card>
 </template>
@@ -62,17 +69,87 @@
 <script>
 export default {
   data: () => ({
+    uid: null,
+    uavatar: null,
+    uname: "",
+
+    id: "",
     title: "",
     pic: null,
     content: "",
     location: "",
     date: new Date().toISOString().substr(0, 10),
-    menu: false
-  }),
+    menu: false,
 
+    likeUsers: [], //点赞用户列表
+    comments: [], //评论列表
+    commentId: undefined //评论 ID
+  }),
+  created() {
+    const cardId = this.$route.params.cardId;
+    const headers = {
+      Authorization: `jwt ${this.$store.state.user.token}`
+    };
+    this.axios
+      .get(`/card/${cardId}/`, { headers: headers })
+      .then(response => {
+        let obj = response.data.data;
+        this.uid = obj.userprofile.id;
+        this.uavatar = obj.userprofile.avatar;
+        this.uname = obj.userprofile.username;
+        this.id = obj.id;
+        this.title = obj.title;
+        this.pic = obj.pic;
+        this.content = obj.content;
+        this.location = obj.location;
+        this.date = obj.date;
+      })
+      .catch(error => {
+        this.$store.dispatch("updateAlter", {
+          msg: "网络异常, 查看失败",
+          msgType: "error",
+          msgShow: true
+        });
+        this.msgtimer = setTimeout(() => {
+          this.$store.dispatch("updateAlter", { msgShow: false });
+        }, 3300);
+        this.$router.back(-1);
+      });
+  },
   methods: {
-    cardcreate() {
-      console.log(this.title, this.pic, this.content, this.location, this.date);
+    editcard() {
+      this.$router.push(`/cards/${this.id}/edit`);
+    },
+    delcard() {
+      const cardId = this.id;
+      const headers = {
+        Authorization: `jwt ${this.$store.state.user.token}`
+      };
+      this.axios
+        .delete(`/card/${cardId}/`, { headers: headers })
+        .then(response => {
+          this.$store.dispatch("updateAlter", {
+            msg: response.data.msg,
+            msgType: "success",
+            msgShow: true
+          });
+          this.msgtimer = setTimeout(() => {
+            this.$store.dispatch("updateAlter", { msgShow: false });
+          }, 3300);
+          this.$router.push({
+            name: "Home"
+          });
+        })
+        .catch(error => {
+          this.$store.dispatch("updateAlter", {
+            msg: "网络异常, 查看失败",
+            msgType: "error",
+            msgShow: true
+          });
+          this.msgtimer = setTimeout(() => {
+            this.$store.dispatch("updateAlter", { msgShow: false });
+          }, 3300);
+        });
     }
   }
 };
@@ -83,42 +160,6 @@ export default {
   -webkit-tap-highlight-color: transparent;
   font-size: 100%;
   position: relative;
-}
-
-.photo-mask {
-  -webkit-tap-highlight-color: transparent;
-  font-size: 100%;
-  bottom: 0;
-  height: 5px;
-  position: absolute;
-  width: 100%;
-  display: -webkit-box;
-}
-.photo-mask-left {
-  -webkit-tap-highlight-color: transparent;
-  font-size: 100%;
-  background: #fff;
-  height: 5px;
-  width: 10px;
-}
-.photo-mask-arrow-left {
-  -webkit-tap-highlight-color: transparent;
-  font-size: 100%;
-}
-.photo-mask-arrow-right {
-  -webkit-tap-highlight-color: transparent;
-  font-size: 100%;
-  width: 0;
-  height: 0;
-  border-bottom: 5px solid #fff;
-  border-left: 5px solid transparent;
-}
-.photo-mask-right {
-  -webkit-tap-highlight-color: transparent;
-  font-size: 100%;
-  background: #fff;
-  height: 5px;
-  -webkit-box-flex: 1;
 }
 
 .wp-btns {
