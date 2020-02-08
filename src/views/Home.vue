@@ -40,10 +40,10 @@ export default {
     this.axios
       .get(`/card/`)
       .then(response => {
-        this.cards = response.data.results
-        this.count = response.data.count
-        this.next = response.data.next
-        this.previous = response.data.previous
+        this.cards = response.data.results;
+        this.count = response.data.count;
+        this.next = response.data.next;
+        this.previous = response.data.previous;
       })
       .catch(error => {
         this.$store.dispatch("updateAlter", {
@@ -51,14 +51,14 @@ export default {
           msgType: "error",
           msgShow: true
         });
-        this.$router.back(-1);
+        this.$router.push("/");
       });
   },
   data: () => ({
     count: null,
     next: null,
     previous: null,
-    cards:[],
+    cards: [],
     homecardsItems: [
       {
         id: 1,
