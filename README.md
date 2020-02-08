@@ -2,7 +2,7 @@
 GithubPages：https://lizhenqiangcool.github.io/youngtrip/dist/
 
 # 后端 docker-compose部署在阿里云
-Django + DRF + celery+ flow + redis + rabbitmq
+Django + DRF + celery+ flower + redis + rabbitmq
 
 # youngtrip
 
