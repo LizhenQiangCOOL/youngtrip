@@ -1,8 +1,10 @@
 <template>
-  <v-card elevation="0">
-    <SelfHeader :id="uid" :avatar="uavatar" :author="uname" />
-    <v-card-text class="subtitle-1" style="padding-bottom:0">
-      <v-badge color="green" :content="count">你の游记</v-badge>
+  <v-card class="mx-3 mt-3">
+    <v-card-text>
+      <p>
+        <v-badge color="red" v-if="!cards.length" :content="0">你喜欢的游记</v-badge>
+        <v-badge color="red" v-else :content="cards.length">你喜欢的游记</v-badge>
+      </p>
     </v-card-text>
     <HomeCard
       v-for="card in cards"
@@ -14,59 +16,51 @@
       :avatar="card.userprofile.avatar"
       :author="card.userprofile.username"
       :uid="card.userprofile.id"
-      :avatarhidden="true"
+      :avatarhidden="false"
     ></HomeCard>
   </v-card>
 </template>
 
 <script>
 import { mapState } from "vuex";
-
 import HomeCard from "@/components/HomeCard";
-import SelfHeader from "@/views/user/SelfHeader";
+
 export default {
   components: {
-    HomeCard,
-    SelfHeader
+    HomeCard
   },
+
   created() {
-    //  个人信息直接路由传递
-    this.uid = this.$route.params.user;
-    this.uavatar = this.$route.params.avatar;
-    this.uname = this.$route.params.name;
-    //　个人游记数据请求
     const params = {
       page: 1,
       page_size: 99999999,
       userprofile: this.user.userinfo.id
     };
-
+    const headers = {
+      Authorization: `jwt ${this.$store.state.user.token}`
+    };
     this.axios
-      .get(`/card/`, { params })
+      .get(`/likecard/`, { params, headers: headers })
       .then(response => {
-        let obj = response.data;
-        this.count = obj.count;
-        this.next = obj.next;
-        this.previous = obj.previous;
-        this.cards = obj.results;
+        this.cards = response.data.results;
+        this.count = response.data.count;
+        this.next = response.data.next;
+        this.previous = response.data.previous;
       })
       .catch(error => {
         this.$store.dispatch("updateAlter", {
-          msg: "查看失败, 请稍后重试",
+          msg: "获取数据失败",
           msgType: "error",
           msgShow: true
         });
       });
   },
-  data: () => ({
-    uid: null,
-    uavatar: null,
-    uname: null,
 
+  data: () => ({
     count: null,
     next: null,
     previous: null,
-    cards: null,
+    cards: [],
     homecardsItems: [
       {
         id: 1,
@@ -137,9 +131,7 @@ export default {
       "auth",
       "user"
     ])
-  },
-
-  methods: {}
+  }
 };
 </script>
 

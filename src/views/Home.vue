@@ -1,8 +1,8 @@
 <template>
   <div class="home">
     <Carousel />
-     <HomeCard
-      v-for="card in homecardsItems"
+    <HomeCard
+      v-for="card in cards"
       :key="card.id"
       :id="card.id"
       :img="card.pic"
@@ -14,18 +14,12 @@
       :avatarhidden="false"
     ></HomeCard>
 
-      <v-speed-dial
-          fixed
-          bottom
-          right
-          value="true"
-          >
-          <v-btn color="pink" fab
-          style="position:relative; top:-25px; left:-25px"
-          to="/cards/create"
-          ><v-icon>mdi-plus</v-icon></v-btn>
-      </v-speed-dial>
- <!-- to="/cards/1/content" -->
+    <v-speed-dial fixed bottom right value="true">
+      <v-btn color="pink" fab style="position:relative; top:-25px; left:-25px" to="/cards/create">
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
+    </v-speed-dial>
+    <!-- to="/cards/1/content" -->
   </div>
 </template>
 
@@ -42,7 +36,29 @@ export default {
     Carousel,
     HomeCard
   },
+  created() {
+    this.axios
+      .get(`/card/`)
+      .then(response => {
+        this.cards = response.data.results
+        this.count = response.data.count
+        this.next = response.data.next
+        this.previous = response.data.previous
+      })
+      .catch(error => {
+        this.$store.dispatch("updateAlter", {
+          msg: "获取数据失败",
+          msgType: "error",
+          msgShow: true
+        });
+        this.$router.back(-1);
+      });
+  },
   data: () => ({
+    count: null,
+    next: null,
+    previous: null,
+    cards:[],
     homecardsItems: [
       {
         id: 1,
@@ -119,9 +135,6 @@ export default {
               msgType: "success",
               msgShow: true
             });
-            vm.msgtimer = setTimeout(() => {
-              vm.$store.dispatch("updateAlter", { msgShow: false });
-            }, 3300);
             break;
           case "Login":
             vm.$store.dispatch("updateAlter", {
@@ -129,9 +142,6 @@ export default {
               msgType: "success",
               msgShow: true
             });
-            vm.msgtimer = setTimeout(() => {
-              vm.$store.dispatch("updateAlter", { msgShow: false });
-            }, 3300);
             break;
         }
       } else if (logout) {
@@ -140,9 +150,6 @@ export default {
           msgType: "success",
           msgShow: true
         });
-        vm.msgtimer = setTimeout(() => {
-          vm.$store.dispatch("updateAlter", { msgShow: false });
-        }, 3300);
       }
     });
   },
@@ -162,9 +169,6 @@ export default {
           msgType: "success",
           msgShow: true
         });
-        this.msgtimer = setTimeout(() => {
-          this.$store.dispatch("updateAlter", { msgShow: false });
-        }, 3300);
       }
     }
   }

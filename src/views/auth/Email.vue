@@ -119,9 +119,6 @@ export default {
             msgType: "success",
             msgShow: true
           });
-          this.msgtimer = setTimeout(() => {
-            this.$store.dispatch("updateAlter", { msgShow: false });
-          }, 3300);
         })
         .catch(error => {
           this.$store.dispatch("updateAlter", {
@@ -129,9 +126,6 @@ export default {
             msgType: "error",
             msgShow: true
           });
-          this.msgtimer = setTimeout(() => {
-            this.$store.dispatch("updateAlter", { msgShow: false });
-          }, 3300);
         });
     },
     //向父组件传值

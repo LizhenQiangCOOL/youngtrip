@@ -38,7 +38,7 @@ export default {
   },
 
   data: () => ({
-    avatar: "",
+    avatar: ""
   }),
   created() {
     const user = this.$store.state.user;
@@ -73,9 +73,6 @@ export default {
               msgType: "success",
               msgShow: true
             });
-            this.msgtimer = setTimeout(() => {
-              this.$store.dispatch("updateAlter", { msgShow: false });
-            }, 3300);
           })
           .catch(error => {
             this.$store.dispatch("updateAlter", {
@@ -83,9 +80,6 @@ export default {
               msgType: "error",
               msgShow: true
             });
-            this.msgtimer = setTimeout(() => {
-              this.$store.dispatch("updateAlter", { msgShow: false });
-            }, 3300);
           });
       }
     }
@@ -94,5 +88,4 @@ export default {
 </script>
 
 <style>
-
 </style>

@@ -128,9 +128,7 @@ export default {
             msgType: "error",
             msgShow: true
           });
-          this.msgtimer = setTimeout(() => {
-            this.$store.dispatch("updateAlter", { msgShow: false });
-          }, 3300);
+
           this.$router.back(-1);
         });
     }
@@ -195,10 +193,11 @@ export default {
               msgType: "success",
               msgShow: true
             });
-            this.msgtimer = setTimeout(() => {
-              this.$store.dispatch("updateAlter", { msgShow: false });
-            }, 3300);
-            this.$router.push({ name: 'Content', params: { cardId:response.data.data.id } })
+
+            this.$router.push({
+              name: "Content",
+              params: { cardId: response.data.data.id }
+            });
           })
           .catch(error => {
             this.$store.dispatch("updateAlter", {
@@ -206,9 +205,6 @@ export default {
               msgType: "error",
               msgShow: true
             });
-            this.msgtimer = setTimeout(() => {
-              this.$store.dispatch("updateAlter", { msgShow: false });
-            }, 3300);
           });
       } else {
         const card = {
@@ -228,10 +224,7 @@ export default {
               msgType: "success",
               msgShow: true
             });
-            this.msgtimer = setTimeout(() => {
-              this.$store.dispatch("updateAlter", { msgShow: false });
-            }, 3300);
-            this.$router.push({ name: 'Content', params: { cardId:this.id } })
+            this.$router.push({ name: "Content", params: { cardId: this.id } });
           })
           .catch(error => {
             this.$store.dispatch("updateAlter", {
@@ -239,9 +232,6 @@ export default {
               msgType: "error",
               msgShow: true
             });
-            this.msgtimer = setTimeout(() => {
-              this.$store.dispatch("updateAlter", { msgShow: false });
-            }, 3300);
           });
       }
     },

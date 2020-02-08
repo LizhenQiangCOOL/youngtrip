@@ -86,9 +86,6 @@ export default {
                 msgType: "success",
                 msgShow: true
               });
-              this.msgtimer = setTimeout(() => {
-                this.$store.dispatch("updateAlter", { msgShow: false });
-              }, 3300);
               router.push("/auth/login");
             })
             .catch(error => {
@@ -97,9 +94,6 @@ export default {
                 msgType: "error",
                 msgShow: true
               });
-              this.msgtimer = setTimeout(() => {
-                this.$store.dispatch("updateAlter", { msgShow: false });
-              }, 3300);
             });
         }
       } else {
@@ -117,9 +111,6 @@ export default {
                 msgType: "error",
                 msgShow: true
               });
-              this.msgtimer = setTimeout(() => {
-                this.$store.dispatch("updateAlter", { msgShow: false });
-              }, 3300);
             });
         }
       }

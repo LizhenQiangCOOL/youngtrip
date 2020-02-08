@@ -1,5 +1,11 @@
 <template class="d-flex">
-  <v-card class="px-3 pt-4"  elevation="0" max-width="720px" style="margin:0 auto" :to="'/cards/'+this.id+'/content'">
+  <v-card
+    class="px-3 pt-4"
+    elevation="0"
+    max-width="720px"
+    style="margin:0 auto"
+    :to="'/cards/'+this.id+'/content'"
+  >
     <v-img :src="img" height="30vh" gradient="to right, rgba(0, 0, 0, 0.5) 0%, transparent">
       <v-card-title class="font-weight-black white--text" v-text="title"></v-card-title>
       <v-card-subtitle class="font-weight-regular body-2">
@@ -24,9 +30,9 @@
 <script>
 export default {
   props: {
-    id:{
-      type:Number,
-      required:true
+    id: {
+      type: Number,
+      required: true
     },
     img: {
       type: String,
@@ -48,16 +54,17 @@ export default {
       type: String,
       required: true
     },
-    uid:{
-      type:Number,
-      required:true
+    uid: {
+      type: Number,
+      required: true
     },
-    avatarhidden:{
+    avatarhidden: {
       type: Boolean,
       required: true
     }
   },
-  data: () => ({})
+  data: () => ({}),
+  methods: {}
 };
 </script>
 

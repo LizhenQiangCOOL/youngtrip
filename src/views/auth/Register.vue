@@ -192,18 +192,12 @@ export default {
               msgType: "error",
               msgShow: true
             });
-            this.msgtimer = setTimeout(() => {
-              this.$store.dispatch("updateAlter", { msgShow: false });
-            }, 3300);
           } else {
             this.$store.dispatch("updateAlter", {
               msg: "网络错误",
               msgType: "error",
               msgShow: true
             });
-            this.msgtimer = setTimeout(() => {
-              this.$store.dispatch("updateAlter", { msgShow: false });
-            }, 3300);
           }
         });
     },
@@ -245,9 +239,6 @@ export default {
             msgType: "success",
             msgShow: true
           });
-          this.msgtimer = setTimeout(() => {
-            this.$store.dispatch("updateAlter", { msgShow: false });
-          }, 3300);
         })
         .catch(error => {
           this.$store.dispatch("updateAlter", {
@@ -255,9 +246,6 @@ export default {
             msgType: "error",
             msgShow: true
           });
-          this.msgtimer = setTimeout(() => {
-            this.$store.dispatch("updateAlter", { msgShow: false });
-          }, 3300);
         });
     },
   }

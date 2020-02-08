@@ -27,7 +27,7 @@
             {
                 name:'喜欢',
                 icon:'mdi-cards-heart',
-                to:'',
+                to:'/cards/likecard',
             },
             {
                 name:'个人',

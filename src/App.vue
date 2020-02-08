@@ -1,13 +1,20 @@
 <template>
   <v-app>
     <Header />
+    
+    <v-snackbar v-model="alter.msgShow" :color="alter.msgType" multi-line :timeout="timeout" top>
+      {{alter.msg}}
+      <v-btn color="white" icon @click="closesnackbar">
+        <v-icon>mdi-close-circle</v-icon>
+      </v-btn>
+    </v-snackbar>
+
     <v-content id="main-trip" class="d-flex">
-       <v-card elevation="0" max-width="740px" style="margin:0 auto">
-        <v-alert dismissible class="ma-2" :type="alter.msgType" :value="alter.msgShow">{{alter.msg}}</v-alert>
+      <v-card elevation="0" max-width="740px" style="margin:0 auto">
         <router-view></router-view>
-       </v-card>
+      </v-card>
     </v-content>
-    <Footer/>
+    <Footer />
   </v-app>
 </template>
 
@@ -21,16 +28,24 @@ export default {
 
   components: {
     Header,
-    Footer,
+    Footer
   },
 
   computed: {
     ...mapState(["alter"])
   },
 
-  data: () => ({})
+  data: () => ({
+    timeout: 3000
+  }),
+  methods: {
+    closesnackbar(){
+       this.$store.dispatch('updateAlter', { msgShow: false });
+    },
+  }
 };
 </script>
 
 <style>
+@import "~animate.css/animate.min.css";
 </style>

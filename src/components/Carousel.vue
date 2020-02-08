@@ -12,13 +12,13 @@ export default {
   
       items: [
         {
-          src: "http://photos.breadtrip.com/covers_2019_12_02_bc50571b6df881e0032e160c517ddc77.jpg?imageView/2/w/960/"
+          src: `${process.env.VUE_APP_IMGURL}img/carousel1.jpg`
         },
         {
-          src: "http://photos.breadtrip.com/covers_2018_07_18_0eb8e1f2c8769a9813a5e5f5e308f364.jpg?imageView/2/w/960/"
+          src: `${process.env.VUE_APP_IMGURL}img/carousel2.jpg`
         },
         {
-          src: "http://photos.breadtrip.com/covers_2019_01_25_b3df653037bcf7b8aeaa6a3bb2355974.jpg?imageView/2/w/960/"
+          src: `${process.env.VUE_APP_IMGURL}img/carousel3.jpg`
         },
       ]
     };

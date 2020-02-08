@@ -1,72 +1,155 @@
 <template>
-  <v-card class="mx-3 mt-4">
-    <v-card-text>
-      <v-row>
-        <v-col class="d-flex justify-center">
-          <v-btn icon>
-            <v-avatar size="60">
-              <img :src="uavatar" alt />
-            </v-avatar>
-          </v-btn>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col
-          class="d-flex justify-center"
-          style="font-size: 12px;color: #999;padding-top:20px;"
-        >by {{ uname }}</v-col>
-      </v-row>
-
-      <v-row>
-        <v-col class="d-flex justify-center">
-          <span class="title">{{title}}</span>
-        </v-col>
-      </v-row>
-      <v-divider></v-divider>
-      <v-row>
-        <v-col cols="6">
-          <v-icon size="28" class="mr-1">mdi-calendar</v-icon><span class="subtitle-2">{{date}}</span>
-        </v-col>
-        <v-col cols="6">
-          <v-icon size="28" class="mr-1">mdi-earth</v-icon><span class="subtitle-2">{{location}}</span>
-        </v-col>
-      </v-row>
-      <div class="photo-ctn">
-        <v-img
-          src="http://photos.breadtrip.com/photo_2019_10_13_0eac9e3e0592219ae5c8cf068b63078b.jpg?imageView/2/w/640/q/85"
-        ></v-img>
-        <div class="wp-btns">
-          <a class="comment-btn">
-            <i class="icon-comment"></i>
-            <span>0</span>
-          </a>
-          <i class="icon-btnbg"></i>
-          <a class="like-btn">
-            <i class="icon-like"></i>
-            <span>3</span>
-          </a>
-        </div>
-      </div>
-
+  <div>
+    <v-card class="mx-3 mt-4">
       <v-card-text>
-        <div class="text--primary">{{content}}</div>
-      </v-card-text>
+        <v-row>
+          <v-col class="d-flex justify-center">
+            <v-btn icon>
+              <v-avatar size="60" @click="dumpuser({id:uid,avatar:uavatar,username:uname})">
+                <img :src="uavatar" alt />
+              </v-avatar>
+            </v-btn>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col
+            class="d-flex justify-center"
+            style="font-size: 12px;color: #999;padding-top:20px;"
+          >by {{ uname }}</v-col>
+        </v-row>
 
-      <v-row v-show="uid===this.$store.state.user.userinfo.id">
-        <v-col>
-          <v-btn icon @click="editcard">
-            <v-icon>mdi-content-save-edit</v-icon>
-          </v-btn>
-          <v-btn icon @click="delcard">
-            <v-icon>mdi-delete</v-icon>
-          </v-btn>
-        </v-col>
-      </v-row>
-    </v-card-text>
-  </v-card>
+        <v-row>
+          <v-col class="d-flex justify-center">
+            <span class="title">{{title}}</span>
+          </v-col>
+        </v-row>
+        <v-divider></v-divider>
+        <v-row>
+          <v-col cols="6">
+            <v-icon size="28" class="mr-1">mdi-calendar</v-icon>
+            <span class="subtitle-2">{{date}}</span>
+          </v-col>
+          <v-col cols="6">
+            <v-icon size="28" class="mr-1">mdi-earth</v-icon>
+            <span class="subtitle-2">{{location}}</span>
+          </v-col>
+        </v-row>
+        <div class="photo-ctn">
+          <v-img :src="pic"></v-img>
+          <div class="wp-btns">
+            <a class="comment-btn" @click="clickcomment">
+              <v-icon size="20" color="white" class="pt-1 mx-1 float-right">mdi-message</v-icon>
+              <span>0</span>
+            </a>
+            <i class="icon-btnbg"></i>
+            <a :class="likeclass" @click="like">
+              <v-icon size="20" :color="likecolor" class="mx-1">mdi-cards-heart</v-icon>
+              <span>{{ likeUsers.length }}</span>
+            </a>
+          </div>
+        </div>
+
+        <v-card-text>
+          <div class="text--primary">{{content}}</div>
+        </v-card-text>
+
+        <v-row v-show="uid === user.userinfo.id">
+          <v-col>
+            <v-btn icon @click="editcard">
+              <v-icon>mdi-content-save-edit</v-icon>
+            </v-btn>
+            <v-btn icon @click="delcard">
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
+
+    <v-card class="mx-3 mt-3">
+      <v-card-text>
+        <p>
+          <v-badge color="pink" v-if="!likeUsers.length" content="0">喜欢</v-badge>
+          <v-badge color="pink" v-else :content="likeUsers.length">喜欢</v-badge>
+        </p>
+        <v-avatar
+          size="40"
+          class="mx-2"
+          v-for="likeuser in likeUsers"
+          :key="likeuser.id"
+          @click="dumpuser(likeuser.userprofile)"
+        >
+          <img :src="likeuser.userprofile.avatar" alt />
+        </v-avatar>
+        <p
+          v-if="!likeUsers.length"
+          class="body-1 font-weight-medium d-flex justify-center"
+        >成为第一个点赞的人吧 ?</p>
+      </v-card-text>
+    </v-card>
+
+    <v-card class="mx-3 mt-3">
+      <v-card-text>
+        <p>
+          <v-badge color="green" v-if="!comments.length" content="0">评论</v-badge>
+          <v-badge color="green" v-else :content="comments.length">评论</v-badge>
+        </p>
+
+        <v-row class="comment-line" v-for="comment in comments" :key="comment.id">
+          <v-col cols="2">
+            <v-avatar size="40" :to="'/'+comment.userprofile.id" @click="dumpuser(comment.userprofile)">
+              <img :src="comment.userprofile.avatar" alt />
+            </v-avatar>
+          </v-col>
+          <v-col cols="8" class="comment-content">
+            <span class="mr-3 font-weight-bold subtitle-1">{{comment.userprofile.username}}</span>
+            <span class="caption font-weight-light">{{comment.date}}</span>
+            <div class="body-2 font-weight-medium">{{comment.content}}</div>
+            <div v-if="comment.userprofile.id === user.userinfo.id">
+              <v-icon color="#d0d0d0" size="18" @click="contentedit(comment)">mdi-content-save-edit</v-icon>
+              <v-icon color="#d0d0d0" size="18" @click="contentdel(comment)">mdi-delete</v-icon>
+            </div>
+          </v-col>
+          <v-col cols="2">
+            <a
+              href="#comment-text"
+              class="comment-replay"
+              @click="commentreplay(comment.userprofile.username)"
+            >回复</a>
+          </v-col>
+        </v-row>
+
+        <v-row class="mt-1">
+          <v-col cols="10">
+            <v-textarea
+              id="comment-text"
+              v-model="commentext"
+              outlined
+              clearable
+              background-color="#fbf7ed"
+              label="评论"
+              height="80px"
+            ></v-textarea>
+          </v-col>
+          <v-col cols="2">
+            <v-btn
+              style=" position: relative;top: 20px;left:-20px"
+              rounded
+              depressed
+              color="#4ABDCB"
+              class="white--text"
+              @click="comment"
+            >发送</v-btn>
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
+  </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   data: () => ({
     uid: null,
@@ -75,16 +158,29 @@ export default {
 
     id: "",
     title: "",
-    pic: null,
+    pic: "",
     content: "",
     location: "",
     date: new Date().toISOString().substr(0, 10),
     menu: false,
 
+    likeid: null,
+    likecolor: "white",
+    likeclass: "like-btn",
     likeUsers: [], //点赞用户列表
-    comments: [], //评论列表
-    commentId: undefined //评论 ID
+
+    commentId: null, //评论 ID
+    commentext: "",
+    comments: [] //评论列表
   }),
+  computed: {
+    // 使用对象展开运算符，将 mapState 对象混入到计算属性之中
+    ...mapState([
+      // 映射 this.auth 为 store.state.auth
+      "auth",
+      "user"
+    ])
+  },
   created() {
     const cardId = this.$route.params.cardId;
     this.axios
@@ -100,6 +196,19 @@ export default {
         this.content = obj.content;
         this.location = obj.location;
         this.date = obj.date;
+
+        this.likeUsers = obj.likeUsers;
+        this.comments = obj.comments;
+
+        if (Array.isArray(this.likeUsers)) {
+          const authUserId = this.user.userinfo.id;
+          this.likeUsers.forEach(element => {
+            if (element.userprofile.id === authUserId) {
+              this.likeid = element.id;
+              this.likecolor = "red";
+            }
+          });
+        }
       })
       .catch(error => {
         this.$store.dispatch("updateAlter", {
@@ -107,9 +216,6 @@ export default {
           msgType: "error",
           msgShow: true
         });
-        this.msgtimer = setTimeout(() => {
-          this.$store.dispatch("updateAlter", { msgShow: false });
-        }, 3300);
         this.$router.back(-1);
       });
   },
@@ -130,9 +236,6 @@ export default {
             msgType: "success",
             msgShow: true
           });
-          this.msgtimer = setTimeout(() => {
-            this.$store.dispatch("updateAlter", { msgShow: false });
-          }, 3300);
           this.$router.push({
             name: "Home"
           });
@@ -143,10 +246,186 @@ export default {
             msgType: "error",
             msgShow: true
           });
-          this.msgtimer = setTimeout(() => {
-            this.$store.dispatch("updateAlter", { msgShow: false });
-          }, 3300);
         });
+    },
+
+    like(e) {
+      if (!this.auth) {
+        this.$store.dispatch("updateAlter", {
+          msg: "请先登录",
+          msgType: "info",
+          msgShow: true
+        });
+      } else {
+        if (this.likecolor === "white") {
+          const params = {
+            userprofile: this.user.userinfo.id,
+            card: this.id
+          };
+          const headers = {
+            Authorization: `jwt ${this.$store.state.user.token}`
+          };
+          this.axios
+            .post(`/like/`, params, { headers: headers })
+            .then(response => {
+              this.likeid = response.data.data.id;
+              this.likecolor = "red";
+              this.likeclass = "like-btn likeclass animated swing";
+              this.likeUsers.push(response.data.data);
+            })
+            .catch(error => {
+              this.$store.dispatch("updateAlter", {
+                msg: "like失败",
+                msgType: "error",
+                msgShow: true
+              });
+            });
+        } else {
+          const headers = {
+            Authorization: `jwt ${this.$store.state.user.token}`
+          };
+          this.axios
+            .delete(`/like/${this.likeid}/`, { headers: headers })
+            .then(response => {
+              for (let likeUser of this.likeUsers) {
+                if (likeUser.id === this.likeid) {
+                  this.likeUsers.splice(this.likeUsers.indexOf(likeUser), 1);
+                  break;
+                }
+              }
+              this.likeid = null;
+              this.likecolor = "white";
+              this.likeclass = "like-btn";
+            })
+            .catch(error => {
+              this.$store.dispatch("updateAlter", {
+                msg: "like取消失败",
+                msgType: "error",
+                msgShow: true
+              });
+            });
+        }
+      }
+    },
+
+    clickcomment() {
+      this.commentext = "";
+      this.commentId = null;
+      document.querySelector("#comment-text").focus();
+    },
+    comment() {
+      if (!this.auth) {
+        this.$store.dispatch("updateAlter", {
+          msg: "请先登录",
+          msgType: "info",
+          msgShow: true
+        });
+      } else {
+        if (this.commentId === null) {
+          const params = {
+            content: this.commentext,
+            card: this.id,
+            userprofile: this.user.userinfo.id
+          };
+          const headers = {
+            Authorization: `jwt ${this.$store.state.user.token}`
+          };
+          this.axios
+            .post(`/comment/`, params, { headers: headers })
+            .then(response => {
+              this.comments.push(response.data.data);
+              this.commentId = null;
+              this.commentext = "";
+            })
+            .catch(error => {
+              this.$store.dispatch("updateAlter", {
+                msg: "添加评论失败",
+                msgType: "error",
+                msgShow: true
+              });
+            });
+        } else {
+          const params = {
+            content: this.commentext
+          };
+          const headers = {
+            Authorization: `jwt ${this.$store.state.user.token}`
+          };
+          this.axios
+            .put(`/comment/${this.commentId}/`, params, { headers: headers })
+            .then(response => {
+              for (let comment of this.comments) {
+                if (comment.id === this.commentId) {
+                  comment.content = this.commentext;
+                  break;
+                }
+              }
+              this.commentId = null;
+              this.commentext = "";
+              this.$store.dispatch("updateAlter", {
+                msg: "修改评论成功",
+                msgType: "success",
+                msgShow: true
+              });
+            })
+            .catch(error => {
+              this.$store.dispatch("updateAlter", {
+                msg: "修改评论失败",
+                msgType: "error",
+                msgShow: true
+              });
+            });
+        }
+      }
+    },
+
+    contentedit(comment) {
+      this.commentext = comment.content;
+      this.commentId = comment.id;
+      document.querySelector("#comment-text").focus();
+    },
+    contentdel(comment) {
+      const headers = {
+        Authorization: `jwt ${this.$store.state.user.token}`
+      };
+      this.axios
+        .delete(`/comment/${comment.id}/`, { headers: headers })
+        .then(response => {
+          console.log(comment);
+          for (let commentitem of this.comments) {
+            if (commentitem.id === comment.id) {
+              this.comments.splice(this.comments.indexOf(commentitem), 1);
+              break;
+            }
+          }
+          this.$store.dispatch("updateAlter", {
+            msg: "删除评论成功",
+            msgType: "success",
+            msgShow: true
+          });
+        })
+        .catch(error => {
+          this.$store.dispatch("updateAlter", {
+            msg: "删除评论失败",
+            msgType: "error",
+            msgShow: true
+          });
+        });
+    },
+    commentreplay(uname) {
+      this.commentext = "回复" + uname + "：";
+      this.commentId = null;
+      document.querySelector("#comment-text").focus();
+    },
+    dumpuser(userprofile) {
+      this.$router.push({
+        name: "Column",
+        params: {
+          user: userprofile.id,
+          name: userprofile.username,
+          avatar: userprofile.avatar
+        }
+      });
     }
   }
 };
@@ -180,23 +459,6 @@ export default {
   text-align: right;
   padding-left: 4px;
 }
-.icon-comment {
-  -webkit-tap-highlight-color: transparent;
-  color: #fff;
-  font-weight: lighter;
-  line-height: 27px;
-  text-align: right;
-  font-size: 100%;
-  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAAAcCAYAAAAEN20fAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAK6wAACusBgosNWgAAABx0RVh0U29mdHdhcmUAQWRvYmUgRmlyZXdvcmtzIENTNui8sowAAAAXdEVYdENyZWF0aW9uIFRpbWUAMjAxNC42LjI3c9qmMAAAANVJREFUSInt1iFqA0EUgOE/Kwo5QGxC1aqeITYqalWPENvTFHqDqlXVOUEgPUF0IAQSCI35K7q7YqCF3Q47Zn435r0PnhkA1Ee1Vr8cp526anajgjpXzyMBwqoWMlHfgYo0HYEFcCuAZSIEwAx4AiiAh4QQ2v1FYkRXhoRlSFiGhGVIWIaEZUhYAdwTG+4tZJsQcQI+W8gLcE0E2QC37qWW6ofjfp7Xze6fz3Pf1MMfC97Uac95USEX9bn/tLiQvVoOQcSEvPY9RWzI4FPEhNT/OcVvkG/WzyVTsIX20QAAAABJRU5ErkJggg==);
-  width: 17px;
-  height: 14px;
-  background-size: cover;
-  display: block;
-  margin: 0 7px 0 4px;
-  float: right;
-  position: relative;
-  top: 6px;
-}
 .icon-btnbg {
   -webkit-tap-highlight-color: transparent;
   font-size: 100%;
@@ -222,20 +484,15 @@ export default {
   background-color: rgba(0, 0, 0, 0.5);
   padding-right: 4px;
 }
-.icon-like {
-  -webkit-tap-highlight-color: transparent;
-  color: #fff;
-  font-weight: lighter;
-  line-height: 27px;
-  font-size: 100%;
-  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAAAcCAYAAAAEN20fAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAKwwAACsMBNCkkqwAAABd0RVh0Q3JlYXRpb24gVGltZQAyMDE0LjYuMjdz2qYwAAAAHHRFWHRTb2Z0d2FyZQBBZG9iZSBGaXJld29ya3MgQ1M26LyyjAAAAb5JREFUSInFlz1LHFEUhp+rsJVgJVgJQiBg2DpslUAQhECqhcD+Cf+BlX9CSL1VsAimSmMh2mglgoUQCAYCYruwIfCk2DsymZ3Z+do4bzNw73nf8zDDzLkTyJG6C3wABqnla+BrCOFznifjHwLvgX5q+QL4EkL4lqnNDdhWT1ysc7U/7wa1H/cX6UTdToP8A6OO1ElJSKI/6kEG4iCuV9FE/TgHor5RpxVD0jpSe/FaV9PYF5Wg9oAb4EXZsy/QD2CrofcOeAX8XgGGLSBoAUHsOwRIQLrUE0ibu7EMvUxA1jsGWU9AfnUM8jMBOesY5CwBGXcMMgZYCSFcdQgzBq4AAoC6AZzzvG/Qd+A18ACzR0MI4QF4x+xL9xy6A97GvvNSN9XLBnOjji7VzVTPwqPAmnr6nyBO1bVMv3yQuNlTj5cMcexswGZ7FYPEglWbjfc8HamrBX0Wg6QKD1tCHJbkVwOJxfsNIfYrZFcHiYaR1U9xU3VUMbceSDTtWX6unah7NTLrg0TjQH0sgHhUB+UpSwCJ5h31PgNxr+40yGoOEgO21NsIcas2Oru2BokhG+onZ0OzacbT70Q7miXpL0JKXd49hnWgAAAAAElFTkSuQmCC);
-  width: 17px;
-  height: 14px;
-  background-size: cover;
-  display: block;
-  margin: 0 4px 0 7px;
-  float: left;
+.comment-line {
+  border-bottom: 1px dotted #dededc;
+}
+.comment-content {
   position: relative;
-  top: 6px;
+  top: -6px;
+}
+.comment-replay {
+  color: #a1a1a1;
+  text-decoration: none;
 }
 </style>

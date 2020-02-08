@@ -37,7 +37,6 @@ export default [{
         path:'/cards/:cardId/content',
         name:'Content',
         component: () => import('@/views/card/Content'),
-        meta: {auth:true}
     },
     {
         path:'/cards/:cardId/edit',
@@ -50,7 +49,12 @@ export default [{
         name:'Column',
         component: () => import('@/views/card/Column')
     },
-
+    {
+        path:'/cards/likecard',
+        name:'Likecard',
+        component: () => import('@/views/card/Likecard'),   
+        meta: {auth:true}
+    },
     {
         path: '*',
         redirect: '/'
