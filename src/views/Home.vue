@@ -13,7 +13,7 @@
       :author="card.userprofile.username"
       :uid="card.userprofile.id"
       :avatarhidden="false"
-    ></HomeCard>
+    />
 
     <v-speed-dial fixed bottom right value="true" class="d=felx d-md-none">
       <v-btn color="pink" fab style="position:relative; top:-25px; left:-25px" @click="checkauth">

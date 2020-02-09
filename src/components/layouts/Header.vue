@@ -27,16 +27,17 @@
         label="Search"
         rounded
         clearable
-        id="searchItem"
+        autofocus
+        id="search-item"
         color="green"
-        v-show="expandsearch"
+        background-color='blue-grey lighten-5'
+        v-if="expandsearch"
         v-model.trim="searchValue"
-        @blur="expandsearch = false"
         @keyup.enter="search"
         @input="updateSearchValue"
       />
     </v-expand-x-transition>
-    <v-btn icon @click="expandsearch =! expandsearch">
+    <v-btn icon @click="expandsearch = !expandsearch">
       <v-icon>mdi-magnify</v-icon>
     </v-btn>
 
@@ -121,7 +122,7 @@ export default {
     },
     updateSearchValue() {
       this.$store.commit("UPDATE_SEARCH_VALUE", this.value);
-    }
+    },
   }
 };
 </script>
