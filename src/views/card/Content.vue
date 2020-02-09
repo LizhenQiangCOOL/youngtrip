@@ -53,7 +53,7 @@
           <div class="text--primary">{{content}}</div>
         </v-card-text>
 
-        <v-row v-show="uid === user.userinfo.id">
+        <v-row v-show="auth && user.userinfo &&uid === user.userinfo.id">
           <v-col>
             <v-btn icon @click="editcard">
               <v-icon>mdi-content-save-edit</v-icon>
@@ -97,7 +97,11 @@
 
         <v-row class="comment-line" v-for="comment in comments" :key="comment.id">
           <v-col cols="2">
-            <v-avatar size="40" :to="'/'+comment.userprofile.id" @click="dumpuser(comment.userprofile)">
+            <v-avatar
+              size="40"
+              :to="'/'+comment.userprofile.id"
+              @click="dumpuser(comment.userprofile)"
+            >
               <img :src="comment.userprofile.avatar" alt />
             </v-avatar>
           </v-col>
@@ -105,7 +109,7 @@
             <span class="mr-3 font-weight-bold subtitle-1">{{comment.userprofile.username}}</span>
             <span class="caption font-weight-light">{{comment.date}}</span>
             <div class="body-2 font-weight-medium">{{comment.content}}</div>
-            <div v-if="comment.userprofile.id === user.userinfo.id">
+            <div v-if="auth && user.userinfo && comment.userprofile.id === user.userinfo.id">
               <v-icon color="#d0d0d0" size="18" @click="contentedit(comment)">mdi-content-save-edit</v-icon>
               <v-icon color="#d0d0d0" size="18" @click="contentdel(comment)">mdi-delete</v-icon>
             </div>
@@ -200,14 +204,16 @@ export default {
         this.likeUsers = obj.likeUsers;
         this.comments = obj.comments;
 
-        if (Array.isArray(this.likeUsers)) {
-          const authUserId = this.user.userinfo.id;
-          this.likeUsers.forEach(element => {
-            if (element.userprofile.id === authUserId) {
-              this.likeid = element.id;
-              this.likecolor = "red";
-            }
-          });
+        if (this.auth && this.auth === true) {
+          if (Array.isArray(this.likeUsers)) {
+            const authUserId = this.user.userinfo.id;
+            this.likeUsers.forEach(element => {
+              if (element.userprofile.id === authUserId) {
+                this.likeid = element.id;
+                this.likecolor = "red";
+              }
+            });
+          }
         }
       })
       .catch(error => {

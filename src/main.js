@@ -7,6 +7,7 @@ import vueAxios from 'vue-axios'
 import axios from 'axios'
 
 // axios全局设置
+// axios.defaults.baseURL = 'http://127.0.0.1:8000/api/'
 axios.defaults.baseURL = 'https://xn--m83a.top/api'
 // axios.defaults.baseURL = process.env.VUE_APP_APIURL;
 axios.defaults.headers.post['Content-Type'] = 'application/json';

@@ -38,7 +38,7 @@ export default {
     const params = {
       page: 1,
       page_size: 99999999,
-      userprofile: this.user.userinfo.id
+      userprofile: this.uid,
     };
 
     this.axios

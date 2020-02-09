@@ -1,7 +1,3 @@
-// const goods = require('./data/goods.json');
-// const ratings = require('./data/ratings.json');
-// const seller = require('./data/seller.json');
-
 module.exports = {
   "transpileDependencies": [
     "vuetify"
@@ -11,35 +7,3 @@ module.exports = {
   assetsDir:"assets", //静态资源目录　（js, css, img, fonts）
   lintOnSave:false, //是否开启estlint保存检查
 }
-  // devServer:{
-  //   open: true,
-  //   proxy:{
-  //     //　配置跨域
-  //     '/api':{
-  //       target:'https://xn--m83a.top/api',
-  //       ws:true,
-  //       changeOrigin: true,
-  //       pathRewrite:{
-  //         '^/api':''
-  //       }
-  //     }
-  //   },
-  // },
-    // //自己创建接口，用来mock数据的
-    // before(app){
-    //   // http://localhost:8081/api/goods
-    //   app.get('/api/goods', function(req, res) {
-    //     res.json(goods)
-    //   });
-
-    //   app.get('/api/ratings', function(req, res) {
-    //     res.json(ratings);
-    //   });
-
-    //   app.get('/api/seller', function(req, res) {
-    //     res.json(seller);
-    //   });
-
-    // }
-  // }
-

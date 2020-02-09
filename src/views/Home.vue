@@ -15,11 +15,10 @@
     ></HomeCard>
 
     <v-speed-dial fixed bottom right value="true">
-      <v-btn color="pink" fab style="position:relative; top:-25px; left:-25px" to="/cards/create">
+      <v-btn color="pink" fab style="position:relative; top:-25px; left:-25px" @click="checkauth">
         <v-icon>mdi-plus</v-icon>
       </v-btn>
     </v-speed-dial>
-    <!-- to="/cards/1/content" -->
   </div>
 </template>
 
@@ -122,7 +121,19 @@ export default {
       }
     ]
   }),
-
+  methods: {
+    checkauth() {
+      if (!this.auth) {
+        this.$store.dispatch("updateAlter", {
+          msg: "请先登录",
+          msgType: "info",
+          msgShow: true
+        });
+      } else {
+        this.$router.push("/cards/create");
+      }
+    }
+  },
   beforeRouteEnter(to, from, next) {
     const fromName = from.name;
     const logout = to.params.logout;

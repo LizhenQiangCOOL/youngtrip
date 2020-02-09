@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import routes from './routes'
+import store from '../store'
 import {
   format
 } from 'url'
@@ -20,17 +21,21 @@ router.beforeEach((to, from, next) => {
   const auth = router.app.$options.store.state.auth
   // 如果当前用户已登录，且目标路由包含 /auth/ ，就跳转到首页
   //　或auth要求为true的
-  if (auth && to.path.indexOf('/auth/') !== -1 ||
-    (!auth && to.meta.auth) 
-  ) {
+  if (auth && to.path.indexOf('/auth/') !== -1) {
     next('/')
+  } else if ((!auth && to.meta.auth)) {
+    next('/')
+    store.dispatch('updateAlter', {
+      msg: "请先登录",
+      msgType: "info",
+      msgShow: true
+    });
   } else {
     next()
   }
 })
-
-router.afterEach((to,from,next) => {
-  window.scrollTo(0,0);
+router.afterEach((to, from, next) => {
+  window.scrollTo(0, 0);
 })
 
 export default router
