@@ -34,12 +34,13 @@
             <span class="subtitle-2">{{location}}</span>
           </v-col>
         </v-row>
+
         <div class="photo-ctn">
           <v-img :src="pic"></v-img>
           <div class="wp-btns">
             <a class="comment-btn" @click="clickcomment">
               <v-icon size="20" color="white" class="pt-1 mx-1 float-right">mdi-message</v-icon>
-              <span>0</span>
+              <span>{{ comments.length}}</span>
             </a>
             <i class="icon-btnbg"></i>
             <a :class="likeclass" @click="like">
@@ -107,7 +108,7 @@
           </v-col>
           <v-col cols="8" class="comment-content">
             <span class="mr-3 font-weight-bold subtitle-1">{{comment.userprofile.username}}</span>
-            <span class="caption font-weight-light">{{comment.date}}</span>
+            <span class="caption font-weight-light">{{comment.date | moment('from') }}</span>
             <div class="body-2 font-weight-medium">{{comment.content}}</div>
             <div v-if="auth && user.userinfo && comment.userprofile.id === user.userinfo.id">
               <v-icon color="#d0d0d0" size="18" @click="contentedit(comment)">mdi-content-save-edit</v-icon>
