@@ -119,7 +119,6 @@ export default {
     isShowGetCode: true,
   }),
   created(){
-    console.log('test')
   },
   computed: {
     nameErrors() {

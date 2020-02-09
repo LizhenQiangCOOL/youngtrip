@@ -44,7 +44,6 @@ export default {
         this.count = response.data.count;
         this.next = response.data.next;
         this.previous = response.data.previous;
-        console.log(this.cards);
       })
       .catch(error => {
         this.$store.dispatch("updateAlter", {
