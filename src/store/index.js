@@ -17,6 +17,7 @@ const state = {
     msgType: 'info',
     msgShow: false,
   },
+  searchValue: '',
 }
 
 // 改变状态的方法，不可异步
@@ -37,6 +38,9 @@ const mutations = {
     state.alter = alter
   },
 
+  UPDATE_SEARCH_VALUE(state, searchValue) {
+    state.searchValue = searchValue
+  }
 }
 
 // 类似mutations 提交前面的mutations  调用方法：store.dispatch('login)

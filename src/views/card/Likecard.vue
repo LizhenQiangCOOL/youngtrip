@@ -9,6 +9,7 @@
     <HomeCard
       v-for="card in cards"
       :key="card.id"
+      :card="card"
       :id="card.id"
       :img="card.pic"
       :title="card.title"

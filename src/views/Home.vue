@@ -4,6 +4,7 @@
     <HomeCard
       v-for="card in cards"
       :key="card.id"
+      :card="card"
       :id="card.id"
       :img="card.pic"
       :title="card.title"
@@ -14,7 +15,7 @@
       :avatarhidden="false"
     ></HomeCard>
 
-    <v-speed-dial fixed bottom right value="true">
+    <v-speed-dial fixed bottom right value="true" class="d=felx d-md-none">
       <v-btn color="pink" fab style="position:relative; top:-25px; left:-25px" @click="checkauth">
         <v-icon>mdi-plus</v-icon>
       </v-btn>
@@ -43,6 +44,7 @@ export default {
         this.count = response.data.count;
         this.next = response.data.next;
         this.previous = response.data.previous;
+        console.log(this.cards);
       })
       .catch(error => {
         this.$store.dispatch("updateAlter", {

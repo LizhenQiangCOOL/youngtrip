@@ -7,26 +7,36 @@
     src="https://picsum.photos/1920/1080?random"
     class="pt-1"
     width="100%"
-    height="45%"
+    height="50%"
   >
     <v-btn icon to="/">
       <v-icon size="32">mdi-home</v-icon>
     </v-btn>
 
-    <v-toolbar-title>
-      <v-img
-        alt="Vuetify Name"
-        class="shrink mt-1 hidden-sm-and-down"
-        contain
-        min-width="100"
-        src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-        width="100"
-      />
-    </v-toolbar-title>
+    <v-toolbar-title>青年游记</v-toolbar-title>
 
     <v-spacer></v-spacer>
 
-    <v-btn icon>
+    <v-expand-x-transition>
+      <v-text-field
+        flat
+        solo-inverted
+        hide-details
+        dense
+        prepend-inner-icon="mdi-magnify"
+        label="Search"
+        rounded
+        clearable
+        id="searchItem"
+        color="green"
+        v-show="expandsearch"
+        v-model.trim="searchValue"
+        @blur="expandsearch = false"
+        @keyup.enter="search"
+        @input="updateSearchValue"
+      />
+    </v-expand-x-transition>
+    <v-btn icon @click="expandsearch =! expandsearch">
       <v-icon>mdi-magnify</v-icon>
     </v-btn>
 
@@ -45,7 +55,6 @@
         </v-list-item>
       </v-list>
     </v-menu>
-
     <v-btn v-else icon to="/auth/login">
       <v-icon>mdi-account</v-icon>
     </v-btn>
@@ -63,18 +72,26 @@ export default {
       { title: "游记", icon: "mdi-format-list-bulleted" },
       { title: "个人", icon: "mdi-account-edit" },
       { title: "退出", icon: "mdi-account-off" }
-    ]
+    ],
+    expandsearch: false,
+    value: ""
   }),
-
   computed: {
     // 使用对象展开运算符，将 mapState 对象混入到计算属性之中
     ...mapState([
       // 映射 this.auth 为 store.state.auth
       "auth",
       "user"
-    ])
+    ]),
+    searchValue: {
+      get() {
+        return this.$store.state.searchValue;
+      },
+      set(newValue) {
+        this.value = newValue;
+      }
+    }
   },
-
   methods: {
     memuclick(index) {
       if (index === 1) {
@@ -94,6 +111,16 @@ export default {
     },
     logout() {
       this.$store.dispatch("logout");
+    },
+    search() {
+      const value = this.value;
+
+      if (value !== "") {
+        console.log(value);
+      }
+    },
+    updateSearchValue() {
+      this.$store.commit("UPDATE_SEARCH_VALUE", this.value);
     }
   }
 };

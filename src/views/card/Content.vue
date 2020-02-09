@@ -96,7 +96,7 @@
         </p>
 
         <v-row class="comment-line" v-for="comment in comments" :key="comment.id">
-          <v-col cols="2">
+          <v-col cols="2" class="d-flex justify-center">
             <v-avatar
               size="40"
               :to="'/'+comment.userprofile.id"
@@ -187,43 +187,58 @@ export default {
   },
   created() {
     const cardId = this.$route.params.cardId;
-    this.axios
-      .get(`/card/${cardId}/`)
-      .then(response => {
-        let obj = response.data;
-        this.uid = obj.userprofile.id;
-        this.uavatar = obj.userprofile.avatar;
-        this.uname = obj.userprofile.username;
-        this.id = obj.id;
-        this.title = obj.title;
-        this.pic = obj.pic;
-        this.content = obj.content;
-        this.location = obj.location;
-        this.date = obj.date;
+    const card = this.$route.params.card;
+    if (card && cardId === card.id) {
+      let obj = card;
+      this.uid = obj.userprofile.id;
+      this.uavatar = obj.userprofile.avatar;
+      this.uname = obj.userprofile.username;
+      this.id = obj.id;
+      this.title = obj.title;
+      this.pic = obj.pic;
+      this.content = obj.content;
+      this.location = obj.location;
+      this.date = obj.date;
+      this.likeUsers = obj.likeUsers;
+      this.comments = obj.comments;
+    } else {
+      this.axios
+        .get(`/card/${cardId}/`)
+        .then(response => {
+          let obj = response.data;
+          this.uid = obj.userprofile.id;
+          this.uavatar = obj.userprofile.avatar;
+          this.uname = obj.userprofile.username;
+          this.id = obj.id;
+          this.title = obj.title;
+          this.pic = obj.pic;
+          this.content = obj.content;
+          this.location = obj.location;
+          this.date = obj.date;
 
-        this.likeUsers = obj.likeUsers;
-        this.comments = obj.comments;
-
-        if (this.auth && this.auth === true) {
-          if (Array.isArray(this.likeUsers)) {
-            const authUserId = this.user.userinfo.id;
-            this.likeUsers.forEach(element => {
-              if (element.userprofile.id === authUserId) {
-                this.likeid = element.id;
-                this.likecolor = "red";
-              }
-            });
-          }
-        }
-      })
-      .catch(error => {
-        this.$store.dispatch("updateAlter", {
-          msg: "查看失败",
-          msgType: "error",
-          msgShow: true
+          this.likeUsers = obj.likeUsers;
+          this.comments = obj.comments;
+        })
+        .catch(error => {
+          this.$store.dispatch("updateAlter", {
+            msg: "查看失败",
+            msgType: "error",
+            msgShow: true
+          });
+          this.$router.back(-1);
         });
-        this.$router.back(-1);
-      });
+    }
+    if (this.auth && this.auth === true) {
+      if (Array.isArray(this.likeUsers)) {
+        const authUserId = this.user.userinfo.id;
+        this.likeUsers.forEach(element => {
+          if (element.userprofile.id === authUserId) {
+            this.likeid = element.id;
+            this.likecolor = "red";
+          }
+        });
+      }
+    }
   },
   methods: {
     editcard() {
@@ -397,7 +412,6 @@ export default {
       this.axios
         .delete(`/comment/${comment.id}/`, { headers: headers })
         .then(response => {
-          console.log(comment);
           for (let commentitem of this.comments) {
             if (commentitem.id === comment.id) {
               this.comments.splice(this.comments.indexOf(commentitem), 1);

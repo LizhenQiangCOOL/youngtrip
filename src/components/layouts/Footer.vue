@@ -5,6 +5,7 @@
       grow
       :value="activeBtn"
       color="deep-purple accent-4"
+      class="d=felx d-md-none"
     >
       <v-btn text v-for="item in items" :key="item.icon" :to="item.to">
         <span>{{item.name}}</span>

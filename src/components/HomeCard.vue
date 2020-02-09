@@ -4,7 +4,7 @@
     elevation="0"
     max-width="720px"
     style="margin:0 auto"
-    :to="'/cards/'+this.id+'/content'"
+    @click="intocontent"
   >
     <v-img :src="img" height="30vh" gradient="to right, rgba(0, 0, 0, 0.5) 0%, transparent">
       <v-card-title class="font-weight-black white--text" v-text="title"></v-card-title>
@@ -30,6 +30,10 @@
 <script>
 export default {
   props: {
+    card:{
+      type:Object,
+      required: true
+    },
     id: {
       type: Number,
       required: true
@@ -64,7 +68,14 @@ export default {
     }
   },
   data: () => ({}),
-  methods: {}
+  methods: {
+    intocontent(){
+        this.$router.push({name:'Content', params:{
+          cardId:this.id,
+          card:this.card
+        }});
+    }
+  }
 };
 </script>
 

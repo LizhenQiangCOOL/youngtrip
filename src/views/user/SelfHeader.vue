@@ -43,7 +43,7 @@ export default {
     },
   },
   data: () => ({
-      bgimg:'http://photos.breadtrip.com/user_cover_2018_01_12_c28994f48b3de576d0a3098be7e0101c857f94c8.jpg-usercover.display',
+      bgimg:`${process.env.VUE_APP_IMGURL}img/bg.jpg`,
   })
 };
 </script>
