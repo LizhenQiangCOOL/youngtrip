@@ -5,6 +5,8 @@
 
 ![喜欢与点赞](https://lizhenqiangcool.github.io/youngtrip/public/youngtrip3.png)
 
+(如果图片显示不了，可能DNS出了问题，通过githubpage查看：https://lizhenqiangcool.github.io/youngtrip/)
+
 # 技术栈
 1. 前端: Vue + Vuex + Vue-router + Vuetify + axios
 2. 后端：Django + DRF + celery+ mysql + redis + rabbitmq
