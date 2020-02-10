@@ -1,8 +1,8 @@
 <template>
-  <v-card class="mx-3 mt-3">
+  <v-card >
     <v-card-text>
-      <p>
-        <v-badge color="red" v-if="!cards.length" :content="0">你喜欢的游记</v-badge>
+      <p class="subtitle-1 mt-1" >
+        <v-badge color="red" v-if="!cards.length" content="0">你喜欢的游记</v-badge>
         <v-badge color="red" v-else :content="cards.length">你喜欢的游记</v-badge>
       </p>
     </v-card-text>

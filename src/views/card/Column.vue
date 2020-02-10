@@ -2,8 +2,18 @@
   <v-card elevation="0">
     <SelfHeader :id="uid" :avatar="uavatar" :author="uname" />
     <v-card-text class="subtitle-1" style="padding-bottom:0">
-      <v-badge color="green" :content="count">{{auth&&uid===user.userinfo.id?'你':'他'}}の游记</v-badge>
+      <v-badge
+        color="green"
+        v-if="!cards.length"
+        content="0"
+      >{{auth&&uid===user.userinfo.id?'你':'他'}}の游记</v-badge>
+      <v-badge
+        color="green"
+        v-else
+        :content="cards.length"
+      >{{auth&&uid===user.userinfo.id?'你':'他'}}の游记</v-badge>
     </v-card-text>
+
     <HomeCard
       v-for="card in cards"
       :key="card.id"
@@ -32,14 +42,36 @@ export default {
   },
   created() {
     //  个人信息直接路由传递
-    this.uid = this.$route.params.user;
-    this.uavatar = this.$route.params.avatar;
-    this.uname = this.$route.params.name;
+    this.uid = parseInt(this.$route.params.user);
+    this.uavatar = this.$route.params.avatar || "";
+    this.uname = this.$route.params.name || "";
+
+    if (typeof this.uid !== "number" || isNaN(this.uid)) {
+      this.$router.push("/");
+      return;
+    }
+    if (this.uavatar === "" || this.uname === "") {
+      this.axios
+        .get(`/account/user/${this.uid}/`)
+        .then(response => {
+          let obj = response.data.data;
+          this.uavatar = obj.userinfo.avatar;
+          this.uname = obj.userinfo.user.username;
+        })
+        .catch(error => {
+          this.$store.dispatch("updateAlter", {
+            msg: "用户信息拉取失败, 请稍后重试",
+            msgType: "error",
+            msgShow: true
+          });
+        });
+    }
+
     //　个人游记数据请求
     const params = {
       page: 1,
       page_size: 99999999,
-      userprofile: this.uid,
+      userprofile: this.uid
     };
 
     this.axios
@@ -61,13 +93,13 @@ export default {
   },
   data: () => ({
     uid: null,
-    uavatar: null,
-    uname: null,
+    uavatar: "",
+    uname: "",
 
     count: null,
     next: null,
     previous: null,
-    cards: null,
+    cards: [],
     homecardsItems: [
       {
         id: 1,

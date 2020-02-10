@@ -64,6 +64,7 @@ export default {
               msgShow: true
             });
           }
+          break;
       }
     }
   }

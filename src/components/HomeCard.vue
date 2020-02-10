@@ -1,6 +1,6 @@
 <template class="d-flex">
   <v-card
-    class="px-3 pt-4"
+    class="px-3 pt-3 pb-1"
     elevation="0"
     max-width="720px"
     style="margin:0 auto"
