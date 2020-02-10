@@ -106,31 +106,42 @@ export default {
   },
   created() {
     const cardId = this.$route.params.cardId || null;
+    const card = this.$route.params.card || null;
     if (cardId !== null) {
       this.id = cardId;
       this.pic = null;
       this.pichidden = true;
-      const headers = {
-        Authorization: `jwt ${this.$store.state.user.token}`
-      };
-      this.axios
-        .get(`/card/${cardId}/`, { headers: headers })
-        .then(response => {
-          let obj = response.data.data;
-          this.title = obj.title;
-          this.content = obj.content;
-          this.location = obj.location;
-          this.date = obj.date;
-        })
-        .catch(error => {
-          this.$store.dispatch("updateAlter", {
-            msg: "网络异常",
-            msgType: "error",
-            msgShow: true
-          });
+      this.$store.dispatch("updateAlter", {
+        msg: "暂时不支持修改图片",
+        msgType: "info",
+        msgShow: true
+      });
 
-          this.$router.back(-1);
-        });
+      if (card && cardId === card.id) {
+        let obj = card;
+        this.title = obj.title;
+        this.content = obj.content;
+        this.location = obj.location;
+        this.date = obj.date;
+      } else {
+        this.axios
+          .get(`/card/${cardId}/`)
+          .then(response => {
+            let obj = response.data;
+            this.title = obj.title;
+            this.content = obj.content;
+            this.location = obj.location;
+            this.date = obj.date;
+          })
+          .catch(error => {
+            this.$store.dispatch("updateAlter", {
+              msg: "网络异常",
+              msgType: "error",
+              msgShow: true
+            });
+            this.$router.back(-1);
+          });
+      }
     }
   },
   computed: {

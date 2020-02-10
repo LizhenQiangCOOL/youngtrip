@@ -30,8 +30,8 @@
 <script>
 export default {
   props: {
-    card:{
-      type:Object,
+    card: {
+      type: Object,
       required: true
     },
     id: {
@@ -69,11 +69,14 @@ export default {
   },
   data: () => ({}),
   methods: {
-    intocontent(){
-        this.$router.push({name:'Content', params:{
-          cardId:this.id,
-          card:this.card
-        }});
+    intocontent() {
+      this.$router.push({
+        name: "Content",
+        params: {
+          cardId: this.id,
+          card: this.card
+        }
+      });
     }
   }
 };

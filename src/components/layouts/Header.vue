@@ -30,7 +30,7 @@
         autofocus
         id="search-item"
         color="green"
-        background-color='blue-grey lighten-5'
+        background-color="blue-grey lighten-5"
         v-if="expandsearch"
         v-model.trim="searchValue"
         @keyup.enter="search"
@@ -40,6 +40,7 @@
     <v-btn icon @click="expandsearch = !expandsearch">
       <v-icon>mdi-magnify</v-icon>
     </v-btn>
+
 
     <v-menu offset-y transition="slide-y-transition" v-if="auth">
       <template v-slot:activator="{ on }">
@@ -117,12 +118,12 @@ export default {
       const value = this.value;
 
       if (value !== "") {
-        console.log(value);
+        this.$router.push({name:'Search', query: {q:value}});
       }
     },
     updateSearchValue() {
       this.$store.commit("UPDATE_SEARCH_VALUE", this.value);
-    },
+    }
   }
 };
 </script>

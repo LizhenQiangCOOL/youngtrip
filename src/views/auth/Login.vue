@@ -64,8 +64,8 @@ export default {
   },
 
   data: () => ({
-    name: "",
-    password: "",
+    name: "admin",
+    password: "123456",
     showpassword: false
   }),
   computed: {

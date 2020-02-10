@@ -161,6 +161,7 @@ export default {
     uavatar: null,
     uname: "",
 
+    card: null,
     id: "",
     title: "",
     pic: "",
@@ -187,63 +188,82 @@ export default {
     ])
   },
   created() {
-    const cardId = this.$route.params.cardId;
-    const card = this.$route.params.card;
-    if (card && cardId === card.id) {
-      let obj = card;
-      this.uid = obj.userprofile.id;
-      this.uavatar = obj.userprofile.avatar;
-      this.uname = obj.userprofile.username;
-      this.id = obj.id;
-      this.title = obj.title;
-      this.pic = obj.pic;
-      this.content = obj.content;
-      this.location = obj.location;
-      this.date = obj.date;
-      this.likeUsers = obj.likeUsers;
-      this.comments = obj.comments;
-    } else {
-      this.axios
-        .get(`/card/${cardId}/`)
-        .then(response => {
-          let obj = response.data;
-          this.uid = obj.userprofile.id;
-          this.uavatar = obj.userprofile.avatar;
-          this.uname = obj.userprofile.username;
-          this.id = obj.id;
-          this.title = obj.title;
-          this.pic = obj.pic;
-          this.content = obj.content;
-          this.location = obj.location;
-          this.date = obj.date;
+    const cardId = this.$route.params.cardId || null;
+    const card = this.$route.params.card || null;
+    if (cardId !== null) {
+      if (card && cardId === card.id) {
+        this.card = card;
+        let obj = card;
+        this.uid = obj.userprofile.id;
+        this.uavatar = obj.userprofile.avatar;
+        this.uname = obj.userprofile.username;
+        this.id = obj.id;
+        this.title = obj.title;
+        this.pic = obj.pic;
+        this.content = obj.content;
+        this.location = obj.location;
+        this.date = obj.date;
+        this.likeUsers = obj.likeUsers;
+        this.comments = obj.comments;
 
-          this.likeUsers = obj.likeUsers;
-          this.comments = obj.comments;
-        })
-        .catch(error => {
-          this.$store.dispatch("updateAlter", {
-            msg: "查看失败",
-            msgType: "error",
-            msgShow: true
-          });
-          this.$router.back(-1);
-        });
-    }
-    if (this.auth && this.auth === true) {
-      if (Array.isArray(this.likeUsers)) {
-        const authUserId = this.user.userinfo.id;
-        this.likeUsers.forEach(element => {
-          if (element.userprofile.id === authUserId) {
-            this.likeid = element.id;
-            this.likecolor = "red";
+        if (this.auth && this.auth === true) {
+          if (Array.isArray(this.likeUsers)) {
+            const authUserId = this.user.userinfo.id;
+            this.likeUsers.forEach(element => {
+              if (element.userprofile.id === authUserId) {
+                this.likeid = element.id;
+                this.likecolor = "red";
+              }
+            });
           }
-        });
+        }
+      } else {
+        this.axios
+          .get(`/card/${cardId}/`)
+          .then(response => {
+            let obj = response.data;
+            this.uid = obj.userprofile.id;
+            this.uavatar = obj.userprofile.avatar;
+            this.uname = obj.userprofile.username;
+            this.id = obj.id;
+            this.title = obj.title;
+            this.pic = obj.pic;
+            this.content = obj.content;
+            this.location = obj.location;
+            this.date = obj.date;
+
+            this.likeUsers = obj.likeUsers;
+            this.comments = obj.comments;
+
+            if (this.auth && this.auth === true) {
+              if (Array.isArray(this.likeUsers)) {
+                const authUserId = this.user.userinfo.id;
+                this.likeUsers.forEach(element => {
+                  if (element.userprofile.id === authUserId) {
+                    this.likeid = element.id;
+                    this.likecolor = "red";
+                  }
+                });
+              }
+            }
+          })
+          .catch(error => {
+            this.$store.dispatch("updateAlter", {
+              msg: "查看失败",
+              msgType: "error",
+              msgShow: true
+            });
+            this.$router.back(-1);
+          });
       }
     }
   },
   methods: {
     editcard() {
-      this.$router.push(`/cards/${this.id}/edit`);
+      this.$router.push({
+        name: "Edit",
+        params: { cardId: this.id, card: this.card }
+      });
     },
     delcard() {
       const cardId = this.id;

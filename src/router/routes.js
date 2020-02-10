@@ -6,6 +6,7 @@ export default [
         name: 'Home',
         component: () => import('@/views/Home.vue')
     },
+    // 用户
     {
         path: '/auth/login',
         name: 'Login',
@@ -29,6 +30,7 @@ export default [
             auth: true
         }
     },
+    // card
     {
         path: '/cards/create',
         name: 'Create',
@@ -50,6 +52,14 @@ export default [
             auth: true
         }
     },
+    // Search 
+    {
+        path: '/search',
+        name: 'Search',
+        component: () => import('@/views/Search')
+    },
+
+    // 页面
     {
         path: '/:user',
         name: 'Column',
@@ -63,6 +73,8 @@ export default [
             auth: true
         }
     },
+
+
     {
         path: '*',
         redirect: '/'
