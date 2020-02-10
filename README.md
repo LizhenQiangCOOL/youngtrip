@@ -1,8 +1,8 @@
 # 项目预览
 在线访问(GithubPages)：https://lizhenqiangcool.github.io/youngtrip/dist/
 
-![首页](https://xn--m83a.top/media/img/youngtrip1.png)
-![内容页](https://xn--m83a.top/media/img/youngtrip2.png)
+![首页](https://xn--m83a.top/media/img/youngtrip1.png) ![内容页](https://xn--m83a.top/media/img/youngtrip2.png)
+
 ![喜欢与点赞](https://xn--m83a.top/media/img/youngtrip3.png)
 
 # 技术栈
