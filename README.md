@@ -1,8 +1,15 @@
 # 项目预览
-GithubPages：https://lizhenqiangcool.github.io/youngtrip/dist/
+在线访问(GithubPages)：https://lizhenqiangcool.github.io/youngtrip/dist/
 
-# 后端 docker-compose部署在阿里云
-Django + DRF + celery+ flower + redis + rabbitmq
+![首页](https://xn--m83a.top/media/img/youngtrip1.png)
+![内容页](https://xn--m83a.top/media/img/youngtrip2.png)
+![喜欢与点赞](https://xn--m83a.top/media/img/youngtrip3.png)
+
+# 技术栈
+前端: Vue + Vuex + Vue-router + Vuetify + axios
+后端：Django + DRF + celery+ mysql + redis + rabbitmq
+开发与部署： docker-compose单主机部署
+
 
 # youngtrip
 
