@@ -2,7 +2,7 @@
   <v-card elevation="0">
     <SelfHeader :id="uid" :avatar="uavatar" :author="uname" />
     <v-card-text class="subtitle-1" style="padding-bottom:0">
-      <v-badge color="green" :content="count">你の游记</v-badge>
+      <v-badge color="green" :content="count">{{auth&&uid===user.userinfo.id?'你':'他'}}の游记</v-badge>
     </v-card-text>
     <HomeCard
       v-for="card in cards"

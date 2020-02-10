@@ -41,7 +41,6 @@
       <v-icon>mdi-magnify</v-icon>
     </v-btn>
 
-
     <v-menu offset-y transition="slide-y-transition" v-if="auth">
       <template v-slot:activator="{ on }">
         <v-btn icon>
@@ -71,7 +70,6 @@ export default {
   name: "Header",
   data: () => ({
     items: [
-      { title: "游记", icon: "mdi-format-list-bulleted" },
       { title: "个人", icon: "mdi-account-edit" },
       { title: "退出", icon: "mdi-account-off" }
     ],
@@ -96,19 +94,13 @@ export default {
   },
   methods: {
     memuclick(index) {
-      if (index === 1) {
-        router.push("/user/edit");
-      } else if (index === 2) {
-        this.logout();
-      } else if (index === 0) {
-        this.$router.push({
-          name: "Column",
-          params: {
-            user: this.user.userinfo.id,
-            name: this.user.userinfo.user.username,
-            avatar: this.user.userinfo.avatar
-          }
-        });
+      switch (index) {
+        case 0:
+          router.push("/user/edit");
+          break;
+        case 1:
+          this.logout();
+          break;
       }
     },
     logout() {
@@ -118,7 +110,7 @@ export default {
       const value = this.value;
 
       if (value !== "") {
-        this.$router.push({name:'Search', query: {q:value}});
+        this.$router.push({ name: "Search", query: { q: value } });
       }
     },
     updateSearchValue() {
