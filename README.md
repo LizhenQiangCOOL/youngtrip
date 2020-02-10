@@ -1,9 +1,9 @@
 # 项目预览
 在线访问(GithubPages)：https://lizhenqiangcool.github.io/youngtrip/dist/
 
-![首页](https://raw.githubusercontent.com/LizhenQiangCOOL/youngtrip/master/public/youngtrip1.png) ![内容页](https://raw.githubusercontent.com/LizhenQiangCOOL/youngtrip/master/public/youngtrip2.png)
+![首页](https://github.com/LizhenQiangCOOL/youngtrip/raw/master/public/youngtrip1.png) ![内容页](https://github.com/LizhenQiangCOOL/youngtrip/raw/master/public/youngtrip2.png)
 
-![喜欢与点赞](https://raw.githubusercontent.com/LizhenQiangCOOL/youngtrip/master/public/youngtrip3.png)
+![喜欢与点赞](https://github.com/LizhenQiangCOOL/youngtrip/raw/master/public/youngtrip3.png)
 
 # 技术栈
 1. 前端: Vue + Vuex + Vue-router + Vuetify + axios
