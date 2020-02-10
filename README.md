@@ -6,9 +6,9 @@
 ![喜欢与点赞](https://xn--m83a.top/media/img/youngtrip3.png)
 
 # 技术栈
-前端: Vue + Vuex + Vue-router + Vuetify + axios
-后端：Django + DRF + celery+ mysql + redis + rabbitmq
-开发与部署： docker-compose单主机部署
+1. 前端: Vue + Vuex + Vue-router + Vuetify + axios
+2. 后端：Django + DRF + celery+ mysql + redis + rabbitmq
+3. 开发与部署： docker-compose单主机部署
 
 
 # youngtrip
