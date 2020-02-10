@@ -64,7 +64,7 @@ export default {
   },
 
   data: () => ({
-    name: "admin",
+    name: "zhangsan",
     password: "123456",
     showpassword: false
   }),
