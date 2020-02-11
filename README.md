@@ -1,22 +1,35 @@
 # 项目预览
-在线访问(GithubPages)：https://lizhenqiangcool.github.io/youngtrip/dist/
+在线访问(GithubPages)：<https://lizhenqiangcool.github.io/youngtrip/dist/>
 
 ![首页](https://lizhenqiangcool.github.io/youngtrip/public/youngtrip1.png) ![内容页](https://lizhenqiangcool.github.io/youngtrip/public/youngtrip2.png)
 
 ![喜欢与点赞](https://lizhenqiangcool.github.io/youngtrip/public/youngtrip3.png)
 
-(如果图片显示不了，可能DNS出了问题，通过githubpage查看：https://lizhenqiangcool.github.io/youngtrip/)
+(如果图片显示不了，可能DNS出了问题，通过githubpage查看：<https://lizhenqiangcool.github.io/youngtrip/>)
 
 # 技术栈
 1. 前端: Vue + Vuex + Vue-router + Vuetify + axios
-2. 后端：Django + DRF + celery+ mysql + redis + rabbitmq
-3. 开发与部署： docker-compose单主机部署
-4. 监控 cadvisor通过ＡPI提供实时信息
+2. 后端：Django + DRF + celery + mysql + redis + rabbitmq
+3. 开发与部署： docker-compose单主机部署(nginx、gunicore)
+4. 监控 cADVisor通过ＡPI提供实时信息
+5. 编程环境: 深度deepin(基于debian)、vscode
+
+## 开发todolist
+~~ - [x] 基本页面开发:首页、喜欢、个人、搜索 ~~
+- ~~ [x] 用户相关登录、注册、找回密码 ~~
+- [x] 发表游记卡片、喜欢、评论
+- [x] 邮件验证，celery异步执行
+- []　粉丝关注功能
+- []　监听下拉，拉取更多数据
+- []　在线一对一聊天(websocket)，推送通知
+- []　游记卡片完善，新建游记卡片，邮件通知粉丝
+- []　游记卡片展示整合成一游记时间线展示
+- []  新建游记模式，多图片上传，再写内容生成多游记卡片
 
 
 # youngtrip
 
-## Project setup
+### Project setup
 ```
 npm install
 ```
