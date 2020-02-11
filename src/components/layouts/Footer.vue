@@ -6,6 +6,7 @@
     :value="activeBtn"
     color="deep-purple accent-4"
     class="d=felx d-md-none"
+    :input-value='!hiddenvbn'
   >
     <v-btn text v-for="(item, index) in items" :key="item.icon" @click="intopage(index)">
       <span>{{item.name}}</span>
@@ -16,8 +17,41 @@
 
 <script>
 export default {
+  watch: {
+    $route: {
+      handler: function(val, oldVal) {
+        const name = val.name;
+        switch (name) {
+          case "Home":
+            this.hiddenvbn = false;
+            this.activeBtn = 0;
+            break;
+          case "Likecard":
+            this.hiddenvbn = false;
+            this.activeBtn = 1;
+            break;
+          case "Column":
+            const userid = val.params.user || null;
+            if (
+              userid &&
+              this.$store.state.auth &&
+              this.$store.state.user.userinfo.id === userid
+            ) {
+              this.hiddenvbn = false;
+              this.activeBtn = 2;
+            } else {
+              this.hiddenvbn = true;
+            }
+            break;
+          default:
+            this.hiddenvbn = true;
+        }
+      }
+    }
+  },
   data() {
     return {
+      hiddenvbn: false,
       activeBtn: 0,
       items: [
         {
