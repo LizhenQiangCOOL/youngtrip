@@ -4,7 +4,6 @@
 |图片|图片|
 |---|---|
 |![首页](https://lizhenqiangcool.github.io/youngtrip/public/youngtrip1.png)| ![喜欢页](https://lizhenqiangcool.github.io/youngtrip/public/youngtrip４.png)|
-
 |![内容页](https://lizhenqiangcool.github.io/youngtrip/public/youngtrip2.png)|  ![喜欢与点赞](https://lizhenqiangcool.github.io/youngtrip/public/youngtrip3.png)|
 
 (如果图片显示不了，可能DNS出了问题，通过githubpage查看：<https://lizhenqiangcool.github.io/youngtrip/>)
