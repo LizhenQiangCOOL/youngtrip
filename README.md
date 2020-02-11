@@ -11,6 +11,7 @@
 1. 前端: Vue + Vuex + Vue-router + Vuetify + axios
 2. 后端：Django + DRF + celery+ mysql + redis + rabbitmq
 3. 开发与部署： docker-compose单主机部署
+4. 监控 cadvisor通过ＡPI提供实时信息
 
 
 # youngtrip
