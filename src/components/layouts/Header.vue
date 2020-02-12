@@ -69,6 +69,7 @@ import router from "@/router";
 export default {
   name: "Header",
   data: () => ({
+    bgimg:`${process.env.VUE_APP_IMGURL}img/headbg.png`,
     items: [
       { title: "个人", icon: "mdi-account-edit" },
       { title: "退出", icon: "mdi-account-off" }
