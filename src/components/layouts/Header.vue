@@ -4,7 +4,7 @@
     flex
     color="primary"
     dark
-    src="https://picsum.photos/1920/1080?random"
+    :src="bgimg"
     class="pt-1"
     width="100%"
     height="50%"
