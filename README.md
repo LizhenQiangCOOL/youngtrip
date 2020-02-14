@@ -11,7 +11,7 @@
 # 技术栈
 1. 前端: Vue + Vuex + Vue-router + Vuetify + axios
 2. 后端：Django + DRF + celery + mysql + redis + rabbitmq
-3. 开发与部署： docker-compose单主机部署(nginx、gunicore)
+3. 开发与部署：前端部署GithubPage(cloudflare CDN加速), 后端阿里云docker-compose单主机部署(nginx、gunicore)
 4. 监控 cADVisor通过ＡPI提供实时信息
 5. 编程环境: 深度deepin(基于debian)、vscode
 
