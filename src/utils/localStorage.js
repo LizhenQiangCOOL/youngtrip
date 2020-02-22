@@ -16,6 +16,7 @@ export default {
     }
   },
   removeItem(name) {
+    name = 'youngtrip_'+name
     ls.removeItem(name)
   }
 }
