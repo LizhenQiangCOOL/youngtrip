@@ -1,6 +1,17 @@
 <template>
   <v-card elevation="0">
-    <SelfHeader :id="uid" :avatar="uavatar" :author="uname" />
+    <SelfHeader
+      :id="uid"
+      :avatar="uavatar"
+      :author="uname"
+      :follow="follow"
+      :auth="auth"
+      :authUserid="user.userinfo.id"
+      :followers="followerNum"
+      :followees="followeeNum"
+      @click="followuser"
+    />
+
     <v-card-text class="subtitle-1" style="padding-bottom:0">
       <v-badge
         color="green"
@@ -50,24 +61,52 @@ export default {
       this.$router.push("/");
       return;
     }
-    if (this.uavatar === "" || this.uname === "") {
-      this.axios
-        .get(`/account/user/${this.uid}/`)
-        .then(response => {
-          let obj = response.data.data;
-          this.uavatar = obj.userinfo.avatar;
-          this.uname = obj.userinfo.user.username;
-        })
-        .catch(error => {
-          this.$store.dispatch("updateAlter", {
-            msg: "用户信息拉取失败, 请稍后重试",
-            msgType: "error",
-            msgShow: true
-          });
+
+    this.axios
+      .get(`/account/user/${this.uid}/`)
+      .then(response => {
+        let obj = response.data.data.userinfo;
+        this.uavatar = obj.avatar;
+        this.uname = obj.user.username;
+
+        this.followerNum = obj.followerNum;
+        this.followeeNum = obj.followeeNum;
+      })
+      .catch(error => {
+        this.$store.dispatch("updateAlter", {
+          msg: "用户信息拉取失败, 请稍后重试",
+          msgType: "error",
+          msgShow: true
         });
+      });
+    
+    // 如果登录　拉取是否关注该用户
+    if (this.auth && this.user.userinfo.id !== this.uid){
+
+     const params = {
+      follower: this.user.userinfo.id,
+      followee: this.uid
+    };
+    this.axios
+      .get(`/fans/`, { params})
+      .then(response => {
+        if(response.data.count!==0){
+          this.follow = true
+          this.followid = response.data.results[0].id
+        }
+      })
+      .catch(error => {
+        this.$store.dispatch("updateAlter", {
+          msg: "获取数据失败",
+          msgType: "error",
+          msgShow: true
+        });
+      });
+
     }
 
     //　个人游记数据请求
+    // 后面做个图片上传，在把这两个请求合并
     const params = {
       page: 1,
       page_size: 99999999,
@@ -96,6 +135,11 @@ export default {
     uavatar: "",
     uname: "",
 
+    followid: null,
+    follow: false,
+    followerNum: 0,
+    followeeNum: 0,
+
     count: null,
     next: null,
     previous: null,
@@ -106,54 +150,6 @@ export default {
         pic:
           "http://photos.breadtrip.com/photo_2019_10_15_a62a735bac66d94567b709f570194f92.jpg?imageView/1/w/640/h/480/q/85",
         title: "🇺🇸新墨西哥州Albuquerque# 浪漫的热气球节和似雪的白色沙滩🎈",
-        date: "2019.10.1   9025浏览",
-        userprofile: {
-          id: 1,
-          avatar: "https://api.adorable.io/avatars/200/asfdafasdf.png",
-          username: "小一爱客随"
-        }
-      },
-      {
-        id: 2,
-        pic:
-          "http://photos.breadtrip.com/photo_2019_10_31_c26207f514c82339d22a3a88912f0ea6.jpg?imageView/1/w/640/h/480/q/85",
-        title: "非洲海岛流浪记🇲🇺毛里求斯cdn",
-        date: "2019.10.1   9025浏览",
-        userprofile: {
-          id: 1,
-          avatar: "https://api.adorable.io/avatars/200/asfdafasdf.png",
-          username: "小一爱客随"
-        }
-      },
-      {
-        id: 3,
-        pic:
-          "http://photos.breadtrip.com/photo_2019_12_11_33d7de2dd10931d698f65389a5693fc4.jpg?imageView/1/w/640/h/480/q/85",
-        title: "非洲海岛流浪记🇲🇺毛里求斯cdn",
-        date: "2019.10.1   9025浏览",
-        userprofile: {
-          id: 1,
-          avatar: "https://api.adorable.io/avatars/200/asfdafasdf.png",
-          username: "小一爱客随"
-        }
-      },
-      {
-        id: 4,
-        pic:
-          "http://photos.breadtrip.com/photo_2018_02_18_5e2813ae58c7a944a6622e0dde820c4c.jpg?imageView/1/w/640/h/480/q/85",
-        title: "非洲海岛流浪记🇲🇺毛里求斯cdn",
-        date: "2019.10.1   9025浏览",
-        userprofile: {
-          id: 1,
-          avatar: "https://api.adorable.io/avatars/200/asfdafasdf.png",
-          username: "小一爱客随"
-        }
-      },
-      {
-        id: 5,
-        pic:
-          "http://photos.breadtrip.com/photo_2019_12_29_d84e13c3d374449b8be03e939b4cbe33.jpg?imageView/2/w/1384/h/1384/q/85",
-        title: "非洲海岛流浪记🇲🇺毛里求斯cdn",
         date: "2019.10.1   9025浏览",
         userprofile: {
           id: 1,
@@ -172,7 +168,61 @@ export default {
     ])
   },
 
-  methods: {}
+  methods: {
+    followuser() {
+      if (!this.auth) {
+        this.$store.dispatch("updateAlter", {
+          msg: "请先登录",
+          msgType: "info",
+          msgShow: true
+        });
+      } else {
+        if (this.follow) {
+          //取消关注
+          const headers = {
+            Authorization: `jwt ${this.$store.state.user.token}`
+          };
+          this.axios
+            .delete(`/fans/${this.followid}/`, { headers: headers })
+            .then(response => {
+              this.follow = false
+              this.followid =null
+              this.followerNum -=1
+            })
+            .catch(error => {
+              this.$store.dispatch("updateAlter", {
+                msg: "关注取消失败",
+                msgType: "error",
+                msgShow: true
+              });
+            });
+        } else {
+          //关注
+          const params = {
+            follower: this.user.userinfo.id,
+            followee: this.uid
+          };
+          const headers = {
+            Authorization: `jwt ${this.$store.state.user.token}`
+          };
+          this.axios
+            .post(`/fans/`, params, { headers: headers })
+            .then(response => {
+              this.followid = response.data.data
+              this.follow = true
+              this.followerNum +=1
+            })
+            .catch(error => {
+              this.$store.dispatch("updateAlter", {
+                msg: "关注失败",
+                msgType: "error",
+                msgShow: true
+              });
+            });
+        }
+      }
+    }
+  }
 };
 </script>
 
