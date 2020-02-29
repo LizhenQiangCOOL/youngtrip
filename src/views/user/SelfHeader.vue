@@ -4,8 +4,8 @@
       <v-card-text>
         <v-row>
           <v-col cols="4">
-            <div class="mt-2 float-right" style="color:white">
-              <div class="headline font-weight-light">{{followers}}</div>
+            <div class="mt-2 float-right" style="color:white" @click="enterfollower">
+              <div class="headline font-weight-light d-flex justify-center">{{followers}}</div>
               <div class="d-flex justify-center">粉丝</div>
             </div>
           </v-col>
@@ -17,8 +17,8 @@
             </v-btn>
           </v-col>
           <v-col cols="4">
-            <div class="mt-2 float-left" style="color:white">
-              <div class="headline font-weight-light">{{followees}}</div>
+            <div class="mt-2 float-left" style="color:white" @click="enterfollowee">
+              <div class="headline font-weight-light d-flex justify-center">{{followees}}</div>
               <div class="d-flex justify-center">关注</div>
             </div>
           </v-col>
@@ -81,8 +81,14 @@ export default {
   }),
   methods: {
     followyou() {
-      this.$emit('click')
+      this.$emit('followyou')
     },
+    enterfollower(){
+      this.$emit('enterfollower')
+    },
+    enterfollowee(){
+      this.$emit('enterfollowee')
+    }
   }
 };
 </script>

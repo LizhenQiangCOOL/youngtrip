@@ -9,7 +9,9 @@
       :authUserid="user.userinfo.id"
       :followers="followerNum"
       :followees="followeeNum"
-      @click="followuser"
+      @followyou="followyou"
+      @enterfollower="enterfollower"
+      @enterfollowee="enterfollowee"
     />
 
     <v-card-text class="subtitle-1" style="padding-bottom:0">
@@ -79,34 +81,32 @@ export default {
           msgShow: true
         });
       });
-    
+
     // 如果登录　拉取是否关注该用户
-    if (this.auth && this.user.userinfo.id !== this.uid){
-
-     const params = {
-      follower: this.user.userinfo.id,
-      followee: this.uid
-    };
-    this.axios
-      .get(`/fans/`, { params})
-      .then(response => {
-        if(response.data.count!==0){
-          this.follow = true
-          this.followid = response.data.results[0].id
-        }
-      })
-      .catch(error => {
-        this.$store.dispatch("updateAlter", {
-          msg: "获取数据失败",
-          msgType: "error",
-          msgShow: true
+    if (this.auth && this.user.userinfo.id !== this.uid) {
+      const params = {
+        follower: this.user.userinfo.id,
+        followee: this.uid
+      };
+      this.axios
+        .get(`/fans/`, { params })
+        .then(response => {
+          if (response.data.count !== 0) {
+            this.follow = true;
+            this.followid = response.data.results[0].id;
+          }
+        })
+        .catch(error => {
+          this.$store.dispatch("updateAlter", {
+            msg: "获取数据失败",
+            msgType: "error",
+            msgShow: true
+          });
         });
-      });
-
     }
 
     //　个人游记数据请求
-    // 后面做个图片上传，在把这两个请求合并
+    // 后面做个图片上传，在把这三个请求合并
     const params = {
       page: 1,
       page_size: 99999999,
@@ -169,7 +169,7 @@ export default {
   },
 
   methods: {
-    followuser() {
+    followyou() {
       if (!this.auth) {
         this.$store.dispatch("updateAlter", {
           msg: "请先登录",
@@ -185,9 +185,9 @@ export default {
           this.axios
             .delete(`/fans/${this.followid}/`, { headers: headers })
             .then(response => {
-              this.follow = false
-              this.followid =null
-              this.followerNum -=1
+              this.follow = false;
+              this.followid = null;
+              this.followerNum -= 1;
             })
             .catch(error => {
               this.$store.dispatch("updateAlter", {
@@ -208,9 +208,9 @@ export default {
           this.axios
             .post(`/fans/`, params, { headers: headers })
             .then(response => {
-              this.followid = response.data.data
-              this.follow = true
-              this.followerNum +=1
+              this.followid = response.data.data;
+              this.follow = true;
+              this.followerNum += 1;
             })
             .catch(error => {
               this.$store.dispatch("updateAlter", {
@@ -220,6 +220,30 @@ export default {
               });
             });
         }
+      }
+    },
+    enterfollower() {
+      if (this.followerNum > 0) {
+        this.$router.push({
+          name: "follow",
+          params: {
+            uid: this.uid,
+            uname: this.uname,
+            follow: true
+          }
+        });
+      }
+    },
+    enterfollowee() {
+      if (this.followeeNum > 0) {
+        this.$router.push({
+          name: "follow",
+          params: {
+            uid: this.uid,
+            uname: this.uname,
+            follow: false
+          }
+        });
       }
     }
   }

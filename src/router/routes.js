@@ -73,8 +73,12 @@ export default [
             auth: true
         }
     },
-
-
+    // user follow
+    {
+        path: '/user/follow',
+        name: 'follow',
+        component: () => import('@/views/user/Follow'),
+    },
     {
         path: '*',
         redirect: '/'
