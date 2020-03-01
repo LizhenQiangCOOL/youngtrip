@@ -12,6 +12,7 @@
           clearable
           @blur="$v.title.$touch()"
         ></v-text-field>
+
         <v-file-input
           v-if="!pichidden"
           v-model="pic"
@@ -21,6 +22,7 @@
           prepend-icon="mdi-camera"
           required
         ></v-file-input>
+        
         <v-textarea
           solo
           label="内容"

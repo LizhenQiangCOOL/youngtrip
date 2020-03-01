@@ -11,13 +11,14 @@
               :editable="editable"
             >Step {{ n }}</v-stepper-step>
 
-            <v-divider v-if="n !== steps" :key="n"></v-divider>
           </template>
         </v-stepper-header>
         <v-stepper-items>
           <v-stepper-content v-for="n in steps" :key="`${n}-content`" :step="n">
+
             <Email ref="email" v-if="n===1"></Email>
             <Password ref="password" v-else cardtitle="找回密码--重置密码" :enSureBtn="false"></Password>
+
             <v-row v-if="n===1">
               <v-col class="d-flex justify-center">
                 <v-btn color="primary" @click="nextStep(n)">下一步</v-btn>
@@ -34,6 +35,7 @@
       </template>
     </v-stepper>
   </div>
+
 </template>
 
 <script>
