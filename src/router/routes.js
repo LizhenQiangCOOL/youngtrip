@@ -56,7 +56,7 @@ export default [
     {
         path: '/search',
         name: 'Search',
-        component: () => import('@/views/Search')
+        component: () => import('@/views/Search'),
     },
 
     // 页面
@@ -79,6 +79,8 @@ export default [
         name: 'follow',
         component: () => import('@/views/user/Follow'),
     },
+
+
     {
         path: '*',
         redirect: '/'

@@ -6,7 +6,22 @@
     style="margin:0 auto"
     @click="intocontent"
   >
-    <v-img :src="img" height="30vh" gradient="to right, rgba(0, 0, 0, 0.5) 0%, transparent">
+    <v-img 
+      :src="img"
+      lazy-src="https://picsum.photos/id/11/100/60"
+      height="30vh" gradient="to right, rgba(0, 0, 0, 0.5) 0%, transparent">
+
+    <!-- 图片加载转圈 -->
+     <template v-slot:placeholder>
+        <v-row
+          class="fill-height ma-0"
+          align="center"
+          justify="center"
+        >
+          <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+        </v-row>
+      </template>
+
       <v-card-title class="font-weight-black white--text" v-text="title"></v-card-title>
       <v-card-subtitle class="font-weight-regular body-2">
         <v-card class="HomeCard-detail" color="transparent" elevation="0">

@@ -135,7 +135,7 @@ export default {
     },
     getVals() {
       return { email: this.email, code: this.code };
-    }
+    },
   }
 };
 </script>

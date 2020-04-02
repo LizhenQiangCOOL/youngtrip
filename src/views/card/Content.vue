@@ -222,6 +222,7 @@ export default {
           .get(`/card/${cardId}/`)
           .then(response => {
             let obj = response.data;
+            this.card = obj;
             this.uid = obj.userprofile.id;
             this.uavatar = obj.userprofile.avatar;
             this.uname = obj.userprofile.username;
@@ -468,7 +469,6 @@ export default {
         }
       });
     }
-    
   }
 };
 </script>

@@ -99,6 +99,7 @@ export default {
             });
         }
       } else {
+        // 第一步
         if (this.$refs.email[0].getEerrors()) {
           const params = this.$refs.email[0].getVals();
           this.axios
