@@ -17,13 +17,7 @@
     <v-card-text class="subtitle-1" style="padding-bottom:0">
       <v-badge
         color="green"
-        v-if="!cards.length"
-        content="0"
-      >{{auth&&uid===user.userinfo.id?'你':'他'}}の游记</v-badge>
-      <v-badge
-        color="green"
-        v-else
-        :content="cards.length"
+        :content="cards.length.toString()"
       >{{auth&&uid===user.userinfo.id?'你':'他'}}の游记</v-badge>
     </v-card-text>
 

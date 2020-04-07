@@ -17,7 +17,7 @@
             <!-- 上传封面图和其他内容数据 -->
             <!-- uploadfile -->
             <v-card elevation="0" v-if="n===1">
-              <v-card-title class="d-flex justify-center">记录游记--上传封面图</v-card-title>
+              <v-card-title class="d-flex justify-center">增加卡片</v-card-title>
               <v-card-text>
                 <v-row>
                   <v-col cols="12">
@@ -27,7 +27,7 @@
                       v-model="pic"
                       accept="image/*"
                       show-size
-                      label="封面图"
+                      label="图片"
                       prepend-icon="mdi-camera"
                       required
                       @change="uploadfile"
@@ -43,10 +43,10 @@
 
             <!-- 其他数据填充 -->
             <v-card v-else　elevation="0" class="mx-3 mt-4">
-              <v-card-title class="d-flex justify-center">{{id ? '修改游记' : '记录游记'}}</v-card-title>
+              <v-card-title class="d-flex justify-center">{{id ? '修改卡片' : '记录卡片'}}</v-card-title>
               <v-card-text>
                 <form lazy-validation>
-                  <v-text-field
+                  <!-- <v-text-field
                     v-model.trim="title"
                     :error-messages="titleErrors"
                     label="标题"
@@ -54,7 +54,7 @@
                     required
                     clearable
                     @blur="$v.title.$touch()"
-                  ></v-text-field>
+                  ></v-text-field> -->
 
                   <v-textarea
                     solo
@@ -75,6 +75,8 @@
                     :error-messages="locationErrors"
                     @blur="$v.location.$touch()"
                   ></v-text-field>
+
+                  <!-- 日期 -->
                   <v-menu
                     ref="menu"
                     v-model="menu"
@@ -87,7 +89,7 @@
                     <template v-slot:activator="{ on }">
                       <v-text-field
                         v-model="date"
-                        label="时间"
+                        label="日期"
                         prepend-icon="event"
                         readonly
                         v-on="on"
@@ -97,9 +99,34 @@
                     <v-date-picker v-model="date" no-title scrollable>
                       <v-spacer></v-spacer>
                       <v-btn text color="primary" @click="menu = false">取消</v-btn>
-                      <v-btn text color="primary" @click="$refs.menu.save(date)">确定</v-btn>
+                      <v-btn text color="primary" @click="$refs.menu[0].save(date)">确定</v-btn>
                     </v-date-picker>
                   </v-menu>
+
+                  <!-- 时间 -->
+                  <v-dialog
+                    ref="dialog"
+                    v-model="modal"
+                    :return-value.sync="time"
+                    persistent
+                    width="290px"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model="time"
+                        label="时间"
+                        prepend-icon="access_time"
+                        readonly
+                        v-on="on"
+                        required
+                      ></v-text-field>
+                    </template>
+                    <v-time-picker v-if="modal" v-model="time" full-width>
+                      <v-spacer></v-spacer>
+                      <v-btn text color="primary" @click="modal = false">取消</v-btn>
+                      <v-btn text color="primary" @click="$refs.dialog[0].save(time)">确定</v-btn>
+                    </v-time-picker>
+                  </v-dialog>
                 </form>
               </v-card-text>
             </v-card>
@@ -129,10 +156,10 @@ import { required, maxLength } from "vuelidate/lib/validators";
 export default {
   mixins: [validationMixin],
   validations: {
-    title: {
-      required,
-      maxLength: maxLength(80)
-    },
+    // title: {
+    //   required,
+    //   maxLength: maxLength(80)
+    // },
     content: { required, maxLength: maxLength(300) },
     location: { required, maxLength: maxLength(50) }
   },
@@ -153,8 +180,13 @@ export default {
       title: "",
       content: "",
       location: "",
-      date: new Date().toISOString().substr(0, 10),
-      menu: false
+      date: "",
+      menu: false,
+
+      time: "",
+      modal: false,
+
+      datetime: ""
     };
   },
   beforeRouteLeave(to, from, next) {
@@ -164,25 +196,38 @@ export default {
   created() {
     const cardId = this.$route.params.cardId || null;
     const card = this.$route.params.card || null;
+
+    const trip = this.$store.state.trip
+    if(trip.id === null){
+      this.$router.back(-1);
+      return
+    }
+
     if (cardId !== null) {
       this.id = cardId;
       this.imgshow = true;
       if (card && cardId === card.id) {
         let obj = card;
         this.picurl = obj.pic;
-        this.title = obj.title;
+        // this.title = obj.title;
         this.content = obj.content;
         this.location = obj.location;
-        this.date = obj.date;
+        this.datetime = obj.date;
+        let datetimelist = this.datetime.split(" ");
+        this.date = datetimelist[0];
+        this.time = datetimelist[1];
       } else {
         this.axios
           .get(`/card/${cardId}/`)
           .then(response => {
             let obj = response.data;
-            this.title = obj.title;
+            // this.title = obj.title;
             this.content = obj.content;
             this.location = obj.location;
-            this.date = obj.date;
+            this.datetime = obj.date;
+            let datetimelist = this.datetime.split(" ");
+            this.date = datetimelist[0];
+            this.time = datetimelist[1];
           })
           .catch(error => {
             this.$store.dispatch("updateAlter", {
@@ -227,6 +272,16 @@ export default {
       !this.$v.location.required && errors.push("地点必填");
       !this.$v.location.maxLength && errors.push("地点最长50字符串");
       return errors;
+    },
+    dateErrors() {
+      const errors = [];
+      if (!this.$v.date.$dirty) return errors;
+      !this.$v.date.required && errors.push("日期必填");
+    },
+    timeErrors() {
+      const errors = [];
+      if (!this.$v.time.$dirty) return errors;
+      !this.$v.time.required && errors.push("时间必填");
     }
   },
   methods: {
@@ -234,6 +289,8 @@ export default {
       if (n === this.steps) {
         //  　最终完成找回面膜然后　跳转登录页面
         this.cardcreate();
+        // console.log(this.date, this.time)
+        // console.log(this.date+' '+this.time)
       } else {
         this.e1 += 1;
       }
@@ -283,14 +340,16 @@ export default {
       }
     },
     submit() {
+      this.datetime = this.date + " " + this.time;
       if (this.id === null) {
         let formData = new FormData();
         formData.append("userprofile", this.$store.state.user.userinfo.id);
-        formData.append("title", this.title);
+        formData.append("trip", this.$store.state.trip.id)
+        // formData.append("title", this.title);
         formData.append("pic", this.picurl);
         formData.append("content", this.content);
         formData.append("location", this.location);
-        formData.append("date", this.date);
+        formData.append("date", this.datetime);
         const headers = {
           Authorization: `jwt ${this.$store.state.user.token}`,
           "Content-Type": "multipart/form-data"
@@ -298,16 +357,20 @@ export default {
         this.axios
           .post(`/card/`, formData, { headers: headers })
           .then(response => {
+            console.log(response.data.data)
             this.$store.dispatch("updateAlter", {
               msg: response.data.msg,
               msgType: "success",
               msgShow: true
             });
 
+            this.$store.dispatch('updateTripAddCards', response.data.data)
             this.$router.push({
-              name: "Content",
-              params: { cardId: response.data.data.id }
+              name: "TripCreate",
+              params: { step:2 }
             });
+
+
           })
           .catch(error => {
             this.$store.dispatch("updateAlter", {
@@ -319,10 +382,10 @@ export default {
       } else {
         const card = {
           pic: this.picurl,
-          title: this.title,
+          // title: this.title,
           content: this.content,
           location: this.location,
-          date: this.date
+          date: this.datetime
         };
         const headers = {
           Authorization: `jwt ${this.$store.state.user.token}`

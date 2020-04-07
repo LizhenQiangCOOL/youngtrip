@@ -25,11 +25,11 @@
         </v-row>
         <v-divider></v-divider>
         <v-row>
-          <v-col cols="6">
+          <v-col cols="7">
             <v-icon size="28" class="mr-1">mdi-calendar</v-icon>
             <span class="subtitle-2">{{date}}</span>
           </v-col>
-          <v-col cols="6">
+          <v-col cols="5">
             <v-icon size="28" class="mr-1">mdi-earth</v-icon>
             <span class="subtitle-2">{{location}}</span>
           </v-col>
@@ -70,8 +70,7 @@
     <v-card class="mx-3 mt-3">
       <v-card-text>
         <p>
-          <v-badge color="pink" v-if="!likeUsers.length" content="0">喜欢</v-badge>
-          <v-badge color="pink" v-else :content="likeUsers.length">喜欢</v-badge>
+          <v-badge color="pink" :content="likeUsers.length.toString()">喜欢</v-badge>
         </p>
         <v-avatar
           size="40"
@@ -92,8 +91,7 @@
     <v-card class="mx-3 mt-3">
       <v-card-text>
         <p>
-          <v-badge color="green" v-if="!comments.length" content="0">评论</v-badge>
-          <v-badge color="green" v-else :content="comments.length">评论</v-badge>
+          <v-badge color="green" :content="comments.length.toString()">评论</v-badge>
         </p>
 
         <v-row class="comment-line" v-for="comment in comments" :key="comment.id">
@@ -167,7 +165,7 @@ export default {
     pic: "",
     content: "",
     location: "",
-    date: new Date().toISOString().substr(0, 10),
+    date: "",
     menu: false,
 
     likeid: null,

@@ -1,0 +1,361 @@
+<template>
+  <div>
+    <v-stepper class="mx-3 mt-5" v-model="e1" :alt-labels="altLabels">
+      <template>
+        <v-stepper-header>
+          <template v-for="n in steps">
+            <v-stepper-step
+              :key="`${n}-step`"
+              :complete="e1 > n"
+              :step="n"
+              :editable="editable"
+            >Step {{ n }}</v-stepper-step>
+          </template>
+        </v-stepper-header>
+        <v-stepper-items>
+          <v-stepper-content v-for="n in steps" :key="`${n}-content`" :step="n">
+            <!-- 上传封面图和其他内容数据 -->
+            <!-- uploadfile -->
+            <v-card elevation="0" v-if="n===1">
+              <v-card-title class="d-flex justify-center">记录游记</v-card-title>
+
+              <v-card-text>
+                <v-row>
+                  <v-col>
+                    <v-text-field
+                      v-model.trim="title"
+                      :error-messages="titleErrors"
+                      label="标题"
+                      :counter="80"
+                      required
+                      clearable
+                      @blur="$v.title.$touch()"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-file-input
+                      chips
+                      :loading="load"
+                      v-model="pic"
+                      accept="image/*"
+                      show-size
+                      label="封面图"
+                      prepend-icon="mdi-camera"
+                      required
+                      @change="uploadfile"
+                      @click:clear="clickclear"
+                    ></v-file-input>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-img :src="picurl" v-show="imgshow"></v-img>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </v-card>
+
+            <!-- 其他数据填充 -->
+            <v-card v-else　elevation="0" class="mx-3 mt-4">
+              <v-card-title class="d-flex justify-center">为游记增加卡片</v-card-title>
+              <v-item-group v-model="selected">
+                <v-row>
+                  <v-col
+                    v-for="item in items"
+                    :key="item.id"
+                    cols="12"
+                    md="6"
+                    style="cursor:pointer"
+                  >
+                    <v-item v-slot:default="{ active, toggle} ">
+                      <v-img :src="item.pic" height="150" class="text-right pa-2" @click="toggle">
+                        <v-btn icon dark>
+                          <v-icon>{{ active ? 'mdi-heart' : 'mdi-heart-outline' }}</v-icon>
+                        </v-btn>
+                      </v-img>
+                    </v-item>
+                  </v-col>
+                  <v-col cols="12" md="6" class="d-flex justify-center align-center">
+                    <v-btn color="pink" icon height="120" width="120" @click="addcard">
+                      <v-icon dark size="120">mdi-plus</v-icon>
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-item-group>
+            </v-card>
+
+            <v-row v-if="n===1">
+              <v-col class="d-flex justify-center">
+                <v-btn color="primary" @click="nextStep(n)">下一步</v-btn>
+                <v-btn text　@click="cancel">取消</v-btn>
+              </v-col>
+            </v-row>
+            <v-row v-else>
+              <v-col class="d-flex justify-center">
+                <v-btn color="primary" @click="nextStep(n)" v-if="n===2">完成</v-btn>
+              </v-col>
+            </v-row>
+          </v-stepper-content>
+        </v-stepper-items>
+      </template>
+    </v-stepper>
+  </div>
+</template>
+
+<script>
+import { validationMixin } from "vuelidate";
+import { required, maxLength } from "vuelidate/lib/validators";
+
+export default {
+  mixins: [validationMixin],
+  validations: {
+    title: {
+      required,
+      maxLength: maxLength(80)
+    }
+  },
+
+  data() {
+    return {
+      e1: 1,
+      steps: 2,
+      altLabels: false,
+      editable: true,
+
+      pic: null,
+      picurl: "",
+      load: false,
+      imgshow: false,
+
+      id: null,
+      title: "",
+
+      items: [],
+
+      selected: []
+    };
+  },
+  beforeRouteLeave(to, from, next) {
+    next();
+  },
+  created() {
+    const stepe1 = this.$route.params.step || null;
+    if (stepe1 !== null) {
+      this.e1 = stepe1;
+    }
+    const obj = this.$store.state.trip;
+    if (obj.id !== null) {
+      this.id = obj.id;
+      this.title = obj.title;
+      this.picurl = obj.picurl;
+      this.imgshow = true;
+      this.items = obj.cards;
+    } else {
+    }
+  },
+  watch: {
+    steps(val) {
+      if (this.e1 > val) {
+        this.e1 = val;
+      }
+    },
+    vertical() {
+      this.e1 = 2;
+      requestAnimationFrame(() => (this.e1 = 1)); // Workarounds
+    }
+  },
+
+  computed: {
+    titleErrors() {
+      const errors = [];
+      if (!this.$v.title.$dirty) return errors;
+      !this.$v.title.required && errors.push("标题必填");
+      !this.$v.title.maxLength && errors.push("标题最长80字符串");
+      return errors;
+    }
+  },
+  methods: {
+    nextStep(n) {
+      if (n === this.steps) {
+        // 完成
+        this.activetrip();
+      } else {
+        // 下一步trip追加卡片
+        this.tripcreate();
+        if (this.title !== "" && this.picurl !== "") {
+          this.e1 += 1;
+        }
+      }
+    },
+    uploadfile() {
+      if (this.pic === undefined) {
+        return;
+      }
+      this.imgshow = true;
+      this.load = "info";
+      let formData = new FormData();
+      formData.append("file", this.pic);
+      const headers = {
+        Authorization: `jwt ${this.$store.state.user.token}`,
+        "Content-Type": "multipart/form-data"
+      };
+      this.axios
+        .post(`/file/`, formData, { headers: headers })
+        .then(response => {
+          this.picurl = response.data.data;
+          this.load = false;
+        })
+        .catch(error => {
+          this.$store.dispatch("updateAlter", {
+            msg: "图片上传失败",
+            msgType: "error",
+            msgShow: true
+          });
+          this.imgshow = false;
+          this.picurl = "";
+          this.load = false;
+        });
+    },
+    clickclear() {
+      this.imgshow = false;
+      this.pic = null;
+      this.picurl = "";
+      this.load = false;
+    },
+
+    cancel() {
+      // if (this.id !== null) {
+      //   this.$router.push({
+      //     name: "Content",
+      //     params: { cardId: this.id }
+      //   });
+      // } else {
+      this.$router.push({
+        name: "Home"
+      });
+      // }
+    },
+
+    tripcreate() {
+      this.$v.$touch();
+      if (!this.$v.$error && this.picurl !== "") {
+        this.$nextTick(() => {
+          this.submitnext();
+        });
+      }
+    },
+    submitnext() {
+      if (this.id === null) {
+        const trip = {
+          pic: this.picurl,
+          title: this.title
+        };
+        const headers = {
+          Authorization: `jwt ${this.$store.state.user.token}`
+        };
+        this.axios
+          .post(`/trip/`, trip, { headers: headers })
+          .then(response => {
+            const obj = response.data.data;
+            this.id = obj.id;
+
+            const trip = {
+              id: this.id,
+              title: this.title,
+              picurl: this.picurl
+            };
+            this.$store.dispatch("updateTrip", trip);
+          })
+          .catch(error => {
+            this.$store.dispatch("updateAlter", {
+              msg: "网络异常",
+              msgType: "error",
+              msgShow: true
+            });
+          });
+      } else {
+        const trip = {
+          pic: this.picurl,
+          title: this.title
+        };
+        const headers = {
+          Authorization: `jwt ${this.$store.state.user.token}`
+        };
+        this.axios
+          .patch(`/trip/${this.id}/`, trip, { headers: headers })
+          .then(response => {
+            const trip = {
+              id: this.id,
+              title: this.title,
+              picurl: this.picurl
+            };
+            this.$store.dispatch("updateTrip", trip);
+          })
+          .catch(error => {
+            this.$store.dispatch("updateAlter", {
+              msg: "网络异常",
+              msgType: "error",
+              msgShow: true
+            });
+          });
+      }
+    },
+    addcard() {
+      // console.log(this.$store.state.trip)
+      if (this.id === null || this.$store.state.trip.id === null) {
+        this.$store.dispatch("updateAlter", {
+          msg: "请先完成第一步创建游记",
+          msgType: "info",
+          msgShow: true
+        });
+      } else {
+        this.$router.push("/cards/create");
+      }
+    },
+    activetrip() {
+      const trip = {
+        status: '1',
+      };
+      const headers = {
+        Authorization: `jwt ${this.$store.state.user.token}`
+      };
+      this.axios
+        .patch(`/trip/${this.id}/`, trip, { headers: headers })
+        .then(response => {
+          console.log(response.data);
+          this.clearData()
+
+          this.$store.dispatch("updateAlter", {
+            msg: "创建游记成功",
+            msgType: "success",
+            msgShow: true
+          });
+          // 跳转展示页面
+          console.log("跳转展示页面");
+        })
+        .catch(error => {
+          this.$store.dispatch("updateAlter", {
+            msg: "网络异常",
+            msgType: "error",
+            msgShow: true
+          });
+        });
+    },
+
+    clearData() {
+      //清除store中trip数据
+      this.$store.dispatch("clearTrip");
+
+      this.pic = null;
+      this.picurl = "";
+      this.load = false;
+      this.imgshow = false;
+      this.id = null;
+      this.title = "";
+      this.items = [];
+      this.selected = [];
+    }
+  }
+};
+</script>
+
+<style>
+</style>

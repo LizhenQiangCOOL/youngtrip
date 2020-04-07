@@ -1,4 +1,7 @@
 import Home from '../views/Home.vue'
+import {
+    isMoment
+} from 'moment'
 
 export default [
     {
@@ -30,6 +33,20 @@ export default [
             auth: true
         }
     },
+    // trip
+    {
+        path: '/trips/create',
+        name: 'TripCreate',
+        component: () => import('@/views/card/CreateTrip.vue'),
+        meta: {
+            auth: true
+        }
+    },
+    {
+        path: '/trips/:tripId/content',
+        name: 'Trip',
+        component: () => import('@/views/card/Trip.vue'),
+    },
     // card
     {
         path: '/cards/create',
@@ -52,6 +69,7 @@ export default [
             auth: true
         }
     },
+
     // Search 
     {
         path: '/search',

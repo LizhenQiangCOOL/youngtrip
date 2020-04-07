@@ -2,6 +2,9 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import ls from '../utils/localStorage'
 import router from '../router'
+import {
+  numeric
+} from 'vuelidate/lib/validators'
 
 Vue.use(Vuex)
 
@@ -18,6 +21,16 @@ const state = {
     msgShow: false,
   },
   searchValue: '',
+
+  trip: ls.getItem('trip'),
+  // trip:{
+  //   id: null,
+  //   title:'',
+  //   picurl:'',
+  //   cards:[
+  //     //{id:xx, pci:xxx}
+  //   ],
+  // },
 }
 
 // 改变状态的方法，不可异步
@@ -40,6 +53,11 @@ const mutations = {
 
   UPDATE_SEARCH_VALUE(state, searchValue) {
     state.searchValue = searchValue
+  },
+
+  UPDATE_TRIP(state, trip) {
+    state.trip = trip
+    ls.setItem('trip', trip)
   }
 }
 
@@ -92,6 +110,39 @@ const actions = {
 
     }
     commit('UPDATE_USER', user)
+  },
+  updateTrip({
+    state,
+    commit
+  }, trip) {
+    const stateTrip = state.trip
+    if (stateTrip && typeof stateTrip === 'object') {
+      trip = {
+        ...stateTrip,
+        ...trip
+      }
+    }
+    commit('UPDATE_TRIP', trip)
+  },
+  clearTrip({
+    state,
+    commit
+  }) {
+    const trip = {
+      id: null,
+      title: '',
+      picurl: '',
+      cards: [],
+    }
+    commit('UPDATE_TRIP', trip)
+  },
+  updateTripAddCards({
+    state,
+    commit,
+  }, card){
+    let trip = state.trip
+    trip.cards.push(card)
+    commit('UPDATE_TRIP', trip)
   }
 
 }
