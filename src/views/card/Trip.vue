@@ -12,13 +12,14 @@
       @dumpuser="dumpuser"
     />
 
-    <div v-if="cards.length === 0">
-      <p class="body-1 font-weight-medium d-flex justify-center pt-4">该游记没有任何卡片！</p>
-    </div>
+    <p
+      v-if="cards.length === 0"
+      class="body-1 font-weight-medium d-flex justify-center pt-4"
+    >该游记没有任何卡片！</p>
+
     <div v-for="(item, i) in cards" :key="i" v-else>
       <TripCard :cards="item.data" :th="item.delta" :date="item.date"></TripCard>
     </div>
-    <!-- <TripCard :cards="ards[0].data" th="一" date="2015"></TripCard> -->
   </v-card>
 </template>
 
@@ -50,9 +51,8 @@ export default {
         this.title = obj.title;
         this.picurl = obj.pic;
 
-        if (obj.cards.length != 0) {
-          this.firstday = obj.cards[0].dateD;
-        }
+        this.firstday = obj.firstday
+
         let newcards = [];
         let date = null;
         obj.cards.forEach(element => {
@@ -79,6 +79,7 @@ export default {
           .then(response => {
             let obj = response.data;
 
+            console.log(obj)
             this.uid = obj.userprofile.id;
             this.uavatar = obj.userprofile.avatar;
             this.uname = obj.userprofile.username;
@@ -89,9 +90,9 @@ export default {
             this.title = obj.title;
             this.picurl = obj.pic;
 
-            if (obj.cards.length != 0) {
-              this.firstday = obj.cards[0].dateD;
-            }
+       
+            this.firstday = obj.firstday
+
             let newcards = [];
             let date = null;
             obj.cards.forEach(element => {

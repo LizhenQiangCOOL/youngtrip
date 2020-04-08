@@ -2,7 +2,7 @@
   <v-card >
     <v-card-text>
       <p class="subtitle-1 mt-1" >
-        <v-badge color="red"  :content="cards.length.toString()">你喜欢的游记</v-badge>
+        <v-badge color="red"  :content="cards.length.toString()">你喜欢的卡片</v-badge>
       </p>
     </v-card-text>
     <HomeCard
@@ -11,12 +11,13 @@
       :card="card"
       :id="card.id"
       :img="card.pic"
-      :title="card.title"
+      title=""
       :subtitle="card.date"
       :avatar="card.userprofile.avatar"
       :author="card.userprofile.username"
       :uid="card.userprofile.id"
       :avatarhidden="false"
+      :flag="false"
     ></HomeCard>
   </v-card>
 </template>

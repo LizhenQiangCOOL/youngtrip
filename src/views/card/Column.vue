@@ -21,6 +21,11 @@
       >{{auth&&uid===user.userinfo.id?'你':'他'}}の游记</v-badge>
     </v-card-text>
 
+    <p
+      v-if="cards.length === 0"
+      class="body-1 font-weight-medium d-flex justify-center pt-4"
+    >{{auth&&uid===user.userinfo.id?'你':'他'}}没有记录任何游记！</p>
+
     <HomeCard
       v-for="card in cards"
       :key="card.id"
@@ -28,11 +33,13 @@
       :id="card.id"
       :img="card.pic"
       :title="card.title"
-      :subtitle="card.date"
+      :subtitle="(card.firstday)+' '+(card.location)"
       :avatar="card.userprofile.avatar"
       :author="card.userprofile.username"
       :uid="card.userprofile.id"
       :avatarhidden="true"
+      :flag="true"
+      v-else
     ></HomeCard>
   </v-card>
 </template>
@@ -58,6 +65,7 @@ export default {
       return;
     }
 
+    //拉取关注粉丝信息
     this.axios
       .get(`/account/user/${this.uid}/`)
       .then(response => {
@@ -108,13 +116,12 @@ export default {
     };
 
     this.axios
-      .get(`/card/`, { params })
+      .get(`/trip/`, { params })
       .then(response => {
-        let obj = response.data;
-        this.count = obj.count;
-        this.next = obj.next;
-        this.previous = obj.previous;
-        this.cards = obj.results;
+        this.cards = response.data.results;
+        this.count = response.data.count;
+        this.next = response.data.next;
+        this.previous = response.data.previous;
       })
       .catch(error => {
         this.$store.dispatch("updateAlter", {

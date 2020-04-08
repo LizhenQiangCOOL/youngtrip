@@ -8,11 +8,12 @@
       :id="card.id"
       :img="card.pic"
       :title="card.title"
-      :subtitle="card.date"
+      :subtitle="(card.firstday)+' '+(card.location)"
       :avatar="card.userprofile.avatar"
       :author="card.userprofile.username"
       :uid="card.userprofile.id"
       :avatarhidden="false"
+      :flag="true"
     />
 
     <v-speed-dial fixed bottom right value="true" class="d=felx d-md-none">
@@ -38,7 +39,7 @@ export default {
   },
   created() {
     this.axios
-      .get(`/card/`)
+      .get(`/trip/`)
       .then(response => {
         this.cards = response.data.results;
         this.count = response.data.count;
@@ -131,7 +132,7 @@ export default {
           msgShow: true
         });
       } else {
-        this.$router.push("/cards/create");
+        this.$router.push("/trips/create");
       }
     }
   },

@@ -20,36 +20,68 @@
               <v-card-title class="d-flex justify-center">记录游记</v-card-title>
 
               <v-card-text>
-                <v-row>
-                  <v-col>
+                <v-text-field
+                  v-model.trim="title"
+                  :error-messages="titleErrors"
+                  label="标题"
+                  :counter="80"
+                  required
+                  clearable
+                  @blur="$v.title.$touch()"
+                ></v-text-field>
+
+                <v-file-input
+                  chips
+                  :loading="load"
+                  v-model="pic"
+                  accept="image/*"
+                  show-size
+                  label="封面图"
+                  prepend-icon="mdi-camera"
+                  required
+                  @change="uploadfile"
+                  @click:clear="clickclear"
+                ></v-file-input>
+
+                <v-img :src="picurl" v-show="imgshow"></v-img>
+
+                <!-- 日期 -->
+                <v-menu
+                  ref="menu"
+                  v-model="menu"
+                  :close-on-content-click="false"
+                  :return-value.sync="date"
+                  transition="scale-transition"
+                  offset-y
+                  min-width="290px"
+                >
+                  <template v-slot:activator="{ on }">
                     <v-text-field
-                      v-model.trim="title"
-                      :error-messages="titleErrors"
-                      label="标题"
-                      :counter="80"
+                      v-model="date"
+                      label="游记第一天日期"
+                      prepend-icon="event"
+                      readonly
+                      v-on="on"
                       required
-                      clearable
-                      @blur="$v.title.$touch()"
+                      :error-messages="dateErrors"
+                      @blur="$v.date.$touch()"
                     ></v-text-field>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-file-input
-                      chips
-                      :loading="load"
-                      v-model="pic"
-                      accept="image/*"
-                      show-size
-                      label="封面图"
-                      prepend-icon="mdi-camera"
-                      required
-                      @change="uploadfile"
-                      @click:clear="clickclear"
-                    ></v-file-input>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-img :src="picurl" v-show="imgshow"></v-img>
-                  </v-col>
-                </v-row>
+                  </template>
+                  <v-date-picker v-model="date" no-title scrollable>
+                    <v-spacer></v-spacer>
+                    <v-btn text color="primary" @click="menu = false">取消</v-btn>
+                    <v-btn text color="primary" @click="$refs.menu[0].save(date)">确定</v-btn>
+                  </v-date-picker>
+                </v-menu>
+
+                <v-text-field
+                  v-model.trim="location"
+                  label="主要地点"
+                  required
+                  clearable
+                  :error-messages="locationErrors"
+                  @blur="$v.location.$touch()"
+                ></v-text-field>
               </v-card-text>
             </v-card>
 
@@ -110,7 +142,9 @@ export default {
     title: {
       required,
       maxLength: maxLength(80)
-    }
+    },
+    location: { required, maxLength: maxLength(50) },
+    date: { required }
   },
 
   data() {
@@ -130,7 +164,11 @@ export default {
 
       items: [],
 
-      selected: []
+      selected: [],
+
+      location: "",
+      date: "",
+      menu: false
     };
   },
   beforeRouteLeave(to, from, next) {
@@ -146,6 +184,8 @@ export default {
       this.id = obj.id;
       this.title = obj.title;
       this.picurl = obj.picurl;
+      this.date = obj.firstday;
+      this.location = obj.location;
       this.imgshow = true;
       this.items = obj.cards;
     } else {
@@ -169,6 +209,21 @@ export default {
       if (!this.$v.title.$dirty) return errors;
       !this.$v.title.required && errors.push("标题必填");
       !this.$v.title.maxLength && errors.push("标题最长80字符串");
+      return errors;
+    },
+    locationErrors() {
+      const errors = [];
+      if (!this.$v.location.$dirty) return errors;
+      !this.$v.location.required && errors.push("地点必填");
+      !this.$v.location.maxLength && errors.push("地点最长50字符串");
+      return errors;
+    },
+    dateErrors() {
+      const errors = [];
+      if (!this.$v.date.$dirty) return errors;
+      !this.$v.date.required && errors.push("日期必填");
+      this.datetab(this.date, new Date().toLocaleDateString()) === 1 &&
+        errors.push("日期不能大于今天");
       return errors;
     }
   },
@@ -222,16 +277,10 @@ export default {
     },
 
     cancel() {
-      // if (this.id !== null) {
-      //   this.$router.push({
-      //     name: "Content",
-      //     params: { cardId: this.id }
-      //   });
-      // } else {
+      this.clearData();
       this.$router.push({
         name: "Home"
       });
-      // }
     },
 
     tripcreate() {
@@ -246,7 +295,9 @@ export default {
       if (this.id === null) {
         const trip = {
           pic: this.picurl,
-          title: this.title
+          title: this.title,
+          firstday: this.date,
+          location: this.location
         };
         const headers = {
           Authorization: `jwt ${this.$store.state.user.token}`
@@ -260,7 +311,9 @@ export default {
             const trip = {
               id: this.id,
               title: this.title,
-              picurl: this.picurl
+              picurl: this.picurl,
+              firstday: this.date,
+              location: this.location
             };
             this.$store.dispatch("updateTrip", trip);
           })
@@ -274,7 +327,9 @@ export default {
       } else {
         const trip = {
           pic: this.picurl,
-          title: this.title
+          title: this.title,
+          firstday: this.date,
+          location: this.location
         };
         const headers = {
           Authorization: `jwt ${this.$store.state.user.token}`
@@ -285,7 +340,9 @@ export default {
             const trip = {
               id: this.id,
               title: this.title,
-              picurl: this.picurl
+              picurl: this.picurl,
+              firstday: this.date,
+              location: this.location
             };
             this.$store.dispatch("updateTrip", trip);
           })
@@ -312,7 +369,7 @@ export default {
     },
     activetrip() {
       const trip = {
-        status: '1',
+        status: "1"
       };
       const headers = {
         Authorization: `jwt ${this.$store.state.user.token}`
@@ -320,16 +377,14 @@ export default {
       this.axios
         .patch(`/trip/${this.id}/`, trip, { headers: headers })
         .then(response => {
-          console.log(response.data);
-          this.clearData()
-
+          this.clearData();
           this.$store.dispatch("updateAlter", {
             msg: "创建游记成功",
             msgType: "success",
             msgShow: true
           });
           // 跳转展示页面
-          console.log("跳转展示页面");
+          this.$router.push({ name: "Trip", params: { tripId: this.id } });
         })
         .catch(error => {
           this.$store.dispatch("updateAlter", {
@@ -352,6 +407,18 @@ export default {
       this.title = "";
       this.items = [];
       this.selected = [];
+    },
+
+    datetab(date1, date2) {
+      var oDate1 = new Date(date1);
+      var oDate2 = new Date(date2);
+      if (oDate1.getTime() > oDate2.getTime()) {
+        return 1;
+      } else if (oDate1.getTime() == oDate2.getTime()) {
+        return 0;
+      } else {
+        return -1;
+      }
     }
   }
 };

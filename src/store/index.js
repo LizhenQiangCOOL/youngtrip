@@ -23,14 +23,6 @@ const state = {
   searchValue: '',
 
   trip: ls.getItem('trip'),
-  // trip:{
-  //   id: null,
-  //   title:'',
-  //   picurl:'',
-  //   cards:[
-  //     //{id:xx, pci:xxx}
-  //   ],
-  // },
 }
 
 // 改变状态的方法，不可异步
@@ -133,6 +125,8 @@ const actions = {
       title: '',
       picurl: '',
       cards: [],
+      firstday:'',
+      location:'',
     }
     commit('UPDATE_TRIP', trip)
   },

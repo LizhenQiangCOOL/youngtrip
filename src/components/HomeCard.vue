@@ -6,18 +6,15 @@
     style="margin:0 auto"
     @click="intocontent"
   >
-    <v-img 
+    <v-img
       :src="img"
       lazy-src="https://picsum.photos/id/11/100/60"
-      height="30vh" gradient="to right, rgba(0, 0, 0, 0.5) 0%, transparent">
-
-    <!-- 图片加载转圈 -->
-     <template v-slot:placeholder>
-        <v-row
-          class="fill-height ma-0"
-          align="center"
-          justify="center"
-        >
+      height="30vh"
+      gradient="to right, rgba(0, 0, 0, 0.5) 0%, transparent"
+    >
+      <!-- 图片加载转圈 -->
+      <template v-slot:placeholder>
+        <v-row class="fill-height ma-0" align="center" justify="center">
           <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
         </v-row>
       </template>
@@ -25,7 +22,7 @@
       <v-card-title class="font-weight-black white--text" v-text="title"></v-card-title>
       <v-card-subtitle class="font-weight-regular body-2">
         <v-card class="HomeCard-detail" color="transparent" elevation="0">
-          <span class="mx-2 white--text">{{subtitle}}</span>
+          <span class="mx-2 white--text" v-show="subtitle!=='null null'">{{subtitle}}</span>
         </v-card>
       </v-card-subtitle>
 
@@ -80,18 +77,26 @@ export default {
     avatarhidden: {
       type: Boolean,
       required: true
+    },
+    flag: {
+      type: Boolean,
+      required: true
     }
   },
   data: () => ({}),
   methods: {
     intocontent() {
-      this.$router.push({
-        name: "Content",
-        params: {
-          cardId: this.id,
-          card: this.card
-        }
-      });
+      if (this.flag) {
+        this.$router.push({ name: "Trip", params: { tripId: this.id, trip:this.card } });
+      } else {
+        this.$router.push({
+          name: "Content",
+          params: {
+            cardId: this.id,
+            card: this.card
+          }
+        });
+      }
     }
   }
 };

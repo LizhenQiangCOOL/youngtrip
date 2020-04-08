@@ -54,7 +54,7 @@
                     required
                     clearable
                     @blur="$v.title.$touch()"
-                  ></v-text-field> -->
+                  ></v-text-field>-->
 
                   <v-textarea
                     solo
@@ -94,6 +94,8 @@
                         readonly
                         v-on="on"
                         required
+                        :error-messages="dateErrors"
+                        @blur="$v.date.$touch()"
                       ></v-text-field>
                     </template>
                     <v-date-picker v-model="date" no-title scrollable>
@@ -119,6 +121,8 @@
                         readonly
                         v-on="on"
                         required
+                        :error-messages="timeErrors"
+                        @blur="$v.time.$touch()"
                       ></v-text-field>
                     </template>
                     <v-time-picker v-if="modal" v-model="time" full-width>
@@ -161,7 +165,9 @@ export default {
     //   maxLength: maxLength(80)
     // },
     content: { required, maxLength: maxLength(300) },
-    location: { required, maxLength: maxLength(50) }
+    location: { required, maxLength: maxLength(50) },
+    date: { required },
+    time: { required }
   },
 
   data() {
@@ -197,12 +203,14 @@ export default {
     const cardId = this.$route.params.cardId || null;
     const card = this.$route.params.card || null;
 
-    const trip = this.$store.state.trip
-    if(trip.id === null){
+    const trip = this.$store.state.trip;
+    if (trip.id === null) {
       this.$router.back(-1);
-      return
+      return;
     }
-
+    this.date = trip.firstday
+    this.time = '00:00'
+    
     if (cardId !== null) {
       this.id = cardId;
       this.imgshow = true;
@@ -277,11 +285,19 @@ export default {
       const errors = [];
       if (!this.$v.date.$dirty) return errors;
       !this.$v.date.required && errors.push("日期必填");
+      const firstday = this.$store.state.trip.firstday;
+      firstday != "" &&
+        this.datetab(this.date, firstday) === -1 &&
+        errors.push("日期不能小于游记第一天");
+      this.datetab(this.date, new Date().toLocaleDateString()) === 1 &&
+        errors.push("日期不能大于今天");
+      return errors;
     },
     timeErrors() {
       const errors = [];
       if (!this.$v.time.$dirty) return errors;
       !this.$v.time.required && errors.push("时间必填");
+      return errors;
     }
   },
   methods: {
@@ -344,7 +360,7 @@ export default {
       if (this.id === null) {
         let formData = new FormData();
         formData.append("userprofile", this.$store.state.user.userinfo.id);
-        formData.append("trip", this.$store.state.trip.id)
+        formData.append("trip", this.$store.state.trip.id);
         // formData.append("title", this.title);
         formData.append("pic", this.picurl);
         formData.append("content", this.content);
@@ -357,20 +373,18 @@ export default {
         this.axios
           .post(`/card/`, formData, { headers: headers })
           .then(response => {
-            console.log(response.data.data)
+            console.log(response.data.data);
             this.$store.dispatch("updateAlter", {
               msg: response.data.msg,
               msgType: "success",
               msgShow: true
             });
 
-            this.$store.dispatch('updateTripAddCards', response.data.data)
+            this.$store.dispatch("updateTripAddCards", response.data.data);
             this.$router.push({
               name: "TripCreate",
-              params: { step:2 }
+              params: { step: 2 }
             });
-
-
           })
           .catch(error => {
             this.$store.dispatch("updateAlter", {
@@ -435,6 +449,17 @@ export default {
         this.$router.push({
           name: "Home"
         });
+      }
+    },
+    datetab(date1, date2) {
+      var oDate1 = new Date(date1);
+      var oDate2 = new Date(date2);
+      if (oDate1.getTime() > oDate2.getTime()) {
+        return 1;
+      } else if (oDate1.getTime() == oDate2.getTime()) {
+        return 0;
+      } else {
+        return -1;
       }
     }
   }

@@ -35,15 +35,17 @@
           <div class="wp-btns">
             <a class="comment-btn">
               <v-icon size="20" color="white" class="pt-1 mx-1 float-right">mdi-message</v-icon>
-              <span>6</span>
+              <span>{{item.comments.length}}</span>
             </a>
             <i class="icon-btnbg"></i>
             <a :class="likeclass">
               <v-icon size="20" :color="likecolor" class="mx-1">mdi-cards-heart</v-icon>
-              <span>5</span>
+              <span>{{item.likeUsers.length}}</span>
             </a>
           </div>
         </div>
+
+
 
         <v-card-text>
           <div class="text--primary">{{item.content}}</div>
@@ -61,10 +63,9 @@
               </v-avatar>
               {{item.location}}
             </v-chip>
-
-            <!-- <span class="body-2"></span> -->
           </v-col>
         </v-row>
+
       </v-card>
 
       <span class="d-flex justify-center" v-if="i!=cards.length-1">
