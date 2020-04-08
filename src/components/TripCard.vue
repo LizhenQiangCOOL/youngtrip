@@ -56,7 +56,7 @@
             <v-icon size="20" class="mr-1">mdi-calendar</v-icon>{{item.date}}
             <span class="body-1 cla"></span>
           </v-col>
-          <v-col cols="5" class="d-flex flex-row-reverse">
+          <v-col cols="5" class="d-flex flex-row-reverse" v-show="item.location!==''">
             <v-chip color="teal" text-color="white">
               <v-avatar>
                 <v-icon size="18">mdi-earth</v-icon>
