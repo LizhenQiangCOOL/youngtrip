@@ -17,7 +17,7 @@
             <!-- 上传封面图和其他内容数据 -->
             <!-- uploadfile -->
             <v-card elevation="0" v-if="n===1">
-              <v-card-title class="d-flex justify-center">增加卡片</v-card-title>
+              <v-card-title class="d-flex justify-center">{{id?'修改卡片':'增加卡片'}}</v-card-title>
               <v-card-text>
                 <v-row>
                   <v-col cols="12">
@@ -164,8 +164,8 @@ export default {
     //   required,
     //   maxLength: maxLength(80)
     // },
-    content: { required, maxLength: maxLength(300) },
-    location: { required, maxLength: maxLength(50) },
+    content: { maxLength: maxLength(300) },
+    location: { maxLength: maxLength(50) },
     date: { required },
     time: { required }
   },
@@ -192,7 +192,9 @@ export default {
       time: "",
       modal: false,
 
-      datetime: ""
+      datetime: "",
+
+      flag: null
     };
   },
   beforeRouteLeave(to, from, next) {
@@ -202,15 +204,15 @@ export default {
   created() {
     const cardId = this.$route.params.cardId || null;
     const card = this.$route.params.card || null;
+    const flag = this.$route.params.flag || null;
+    this.flag = flag;
 
     const trip = this.$store.state.trip;
-    if (trip.id === null) {
-      this.$router.back(-1);
-      return;
-    }
-    this.date = trip.firstday
-    this.time = '00:00'
-    
+
+    this.date = trip.firstday;
+    this.time = "00:00";
+
+
     if (cardId !== null) {
       this.id = cardId;
       this.imgshow = true;
@@ -225,6 +227,7 @@ export default {
         this.date = datetimelist[0];
         this.time = datetimelist[1];
       } else {
+
         this.axios
           .get(`/card/${cardId}/`)
           .then(response => {
@@ -233,6 +236,8 @@ export default {
             this.content = obj.content;
             this.location = obj.location;
             this.datetime = obj.date;
+            this.picurl = obj.pic
+
             let datetimelist = this.datetime.split(" ");
             this.date = datetimelist[0];
             this.time = datetimelist[1];
@@ -270,14 +275,12 @@ export default {
     contentErrors() {
       const errors = [];
       if (!this.$v.content.$dirty) return errors;
-      !this.$v.content.required && errors.push("内容必填");
       !this.$v.content.maxLength && errors.push("内容最长300字符串");
       return errors;
     },
     locationErrors() {
       const errors = [];
       if (!this.$v.location.$dirty) return errors;
-      !this.$v.location.required && errors.push("地点必填");
       !this.$v.location.maxLength && errors.push("地点最长50字符串");
       return errors;
     },
@@ -305,8 +308,6 @@ export default {
       if (n === this.steps) {
         //  　最终完成找回面膜然后　跳转登录页面
         this.cardcreate();
-        // console.log(this.date, this.time)
-        // console.log(this.date+' '+this.time)
       } else {
         this.e1 += 1;
       }
@@ -349,7 +350,7 @@ export default {
 
     cardcreate() {
       this.$v.$touch();
-      if (!this.$v.$error && this.picurl !== "") {
+      if (!this.$v.$error) {
         this.$nextTick(() => {
           this.submit();
         });
@@ -373,7 +374,6 @@ export default {
         this.axios
           .post(`/card/`, formData, { headers: headers })
           .then(response => {
-            console.log(response.data.data);
             this.$store.dispatch("updateAlter", {
               msg: response.data.msg,
               msgType: "success",
@@ -396,7 +396,6 @@ export default {
       } else {
         const card = {
           pic: this.picurl,
-          // title: this.title,
           content: this.content,
           location: this.location,
           date: this.datetime
@@ -412,7 +411,23 @@ export default {
               msgType: "success",
               msgShow: true
             });
-            this.$router.push({ name: "Content", params: { cardId: this.id } });
+
+            if (this.flag !== null) {
+              const card = {
+                id:this.id,
+                pic: this.picurl
+              }
+              this.$store.dispatch("updateTripCard", card);
+              this.$router.push({
+                name: "TripCreate",
+                params: { step: 2 }
+              });
+            } else {
+              this.$router.push({
+                name: "Content",
+                params: { cardId: this.id }
+              });
+            }
           })
           .catch(error => {
             this.$store.dispatch("updateAlter", {

@@ -78,8 +78,7 @@ export default {
           .get(`/trip/${tripId}/`)
           .then(response => {
             let obj = response.data;
-
-            console.log(obj)
+            
             this.uid = obj.userprofile.id;
             this.uavatar = obj.userprofile.avatar;
             this.uname = obj.userprofile.username;

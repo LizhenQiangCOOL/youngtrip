@@ -19,7 +19,7 @@
         style="margin:0 auto"
         @click="intocontent(item)"
       >
-        <div class="photo-ctn">
+        <div class="photo-ctn" v-if="item.pic">
           <v-img
             :src="item.pic"
             lazy-src="https://picsum.photos/id/11/100/60"
@@ -56,13 +56,14 @@
             <v-icon size="20" class="mr-1">mdi-calendar</v-icon>{{item.date}}
             <span class="body-1 cla"></span>
           </v-col>
-          <v-col cols="5" class="d-flex flex-row-reverse" v-show="item.location!==''">
+          <v-col cols="5" class="d-flex flex-row-reverse" v-if="item.location">
             <v-chip color="teal" text-color="white">
               <v-avatar>
                 <v-icon size="18">mdi-earth</v-icon>
               </v-avatar>
               {{item.location}}
             </v-chip>
+
           </v-col>
         </v-row>
 

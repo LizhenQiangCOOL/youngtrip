@@ -37,7 +37,7 @@
           </v-col>
           <v-col cols="4">
             <div class="d-flex justify-center white--text">
-              <v-badge color="green" :content="commentcount.toString()">喜欢</v-badge>
+              <v-badge color="green" :content="commentcount.toString()">评论</v-badge>
             </div>
           </v-col>
         </v-row>

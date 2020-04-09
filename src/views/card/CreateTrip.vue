@@ -97,14 +97,26 @@
                     md="6"
                     style="cursor:pointer"
                   >
-                    <v-item v-slot:default="{ active, toggle} ">
-                      <v-img :src="item.pic" height="150" class="text-right pa-2" @click="toggle">
-                        <v-btn icon dark>
-                          <v-icon>{{ active ? 'mdi-heart' : 'mdi-heart-outline' }}</v-icon>
-                        </v-btn>
-                      </v-img>
-                    </v-item>
+                    <v-hover>
+                      <template v-slot:default="{ hover }">
+                        <v-item>
+                          <v-img :src="item.pic" height="150" class="text-right pa-2">
+                            <v-fade-transition>
+                              <v-overlay v-if="hover" absolute color="#272727">
+                                <v-btn fab @click="editcard(item)" large color="blue" class="mx-1">
+                                  <v-icon>mdi-content-save-edit</v-icon>
+                                </v-btn>
+                                <v-btn fab @click="delcard(item)" large color="blue" class="mx-1">
+                                  <v-icon>mdi-delete</v-icon>
+                                </v-btn>
+                              </v-overlay>
+                            </v-fade-transition>
+                          </v-img>
+                        </v-item>
+                      </template>
+                    </v-hover>
                   </v-col>
+
                   <v-col cols="12" md="6" class="d-flex justify-center align-center">
                     <v-btn color="pink" icon height="120" width="120" @click="addcard">
                       <v-icon dark size="120">mdi-plus</v-icon>
@@ -168,7 +180,9 @@ export default {
 
       location: "",
       date: "",
-      menu: false
+      menu: false,
+
+      overlay: false
     };
   },
   beforeRouteLeave(to, from, next) {
@@ -223,7 +237,7 @@ export default {
       if (!this.$v.date.$dirty) return errors;
       !this.$v.date.required && errors.push("日期必填");
       this.datetab(this.date, new Date().toLocaleDateString()) === 1 &&
-        errors.push("日期不能大于今天");
+        errors.push("日期必须小于今天");
       return errors;
     }
   },
@@ -277,6 +291,9 @@ export default {
     },
 
     cancel() {
+      if (this.id !== null) {
+        this.deltrip();
+      }
       this.clearData();
       this.$router.push({
         name: "Home"
@@ -356,7 +373,6 @@ export default {
       }
     },
     addcard() {
-      // console.log(this.$store.state.trip)
       if (this.id === null || this.$store.state.trip.id === null) {
         this.$store.dispatch("updateAlter", {
           msg: "请先完成第一步创建游记",
@@ -408,6 +424,31 @@ export default {
       this.items = [];
       this.selected = [];
     },
+    deltrip() {
+      const tripId = this.id;
+      const headers = {
+        Authorization: `jwt ${this.$store.state.user.token}`
+      };
+      this.axios
+        .delete(`/trip/${tripId}/`, { headers: headers })
+        .then(response => {
+          this.$store.dispatch("updateAlter", {
+            msg: response.data.msg,
+            msgType: "success",
+            msgShow: true
+          });
+          this.$router.push({
+            name: "Home"
+          });
+        })
+        .catch(error => {
+          this.$store.dispatch("updateAlter", {
+            msg: "网络异常,删除失败",
+            msgType: "error",
+            msgShow: true
+          });
+        });
+    },
 
     datetab(date1, date2) {
       var oDate1 = new Date(date1);
@@ -419,6 +460,36 @@ export default {
       } else {
         return -1;
       }
+    },
+
+    editcard(item) {
+       this.$router.push({
+        name: "Edit",
+        params: { cardId: item.id, flag : true}
+      });
+
+    },
+    delcard(item) {
+      const cardId = item.id;
+      const headers = {
+        Authorization: `jwt ${this.$store.state.user.token}`
+      };
+      this.axios
+        .delete(`/card/${cardId}/`, { headers: headers })
+        .then(response => {
+          this.items = this.items.filter(el => el.id != item.id);
+          const trip = {
+            cards: this.items
+          };
+          this.$store.dispatch("updateTrip", trip);
+        })
+        .catch(error => {
+          this.$store.dispatch("updateAlter", {
+            msg: "网络异常,删除失败",
+            msgType: "error",
+            msgShow: true
+          });
+        });
     }
   }
 };

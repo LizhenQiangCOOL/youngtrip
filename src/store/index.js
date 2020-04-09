@@ -125,17 +125,28 @@ const actions = {
       title: '',
       picurl: '',
       cards: [],
-      firstday:'',
-      location:'',
+      firstday: '',
+      location: '',
     }
     commit('UPDATE_TRIP', trip)
   },
   updateTripAddCards({
     state,
     commit,
-  }, card){
+  }, card) {
     let trip = state.trip
     trip.cards.push(card)
+    commit('UPDATE_TRIP', trip)
+  },
+
+  updateTripCard({
+    state,
+    commit,
+  }, card){
+    function pFn(p){return p.id == card.id ;}
+    let trip = state.trip
+    const index = trip.cards.findIndex(pFn)
+    trip.cards[index] = card
     commit('UPDATE_TRIP', trip)
   }
 

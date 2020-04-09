@@ -24,18 +24,8 @@
           </v-col>
         </v-row>
         <v-divider></v-divider>
-        <v-row>
-          <v-col cols="7">
-            <v-icon size="28" class="mr-1">mdi-calendar</v-icon>
-            <span class="subtitle-2">{{date}}</span>
-          </v-col>
-          <v-col cols="5">
-            <v-icon size="28" class="mr-1">mdi-earth</v-icon>
-            <span class="subtitle-2">{{location}}</span>
-          </v-col>
-        </v-row>
 
-        <div class="photo-ctn">
+        <div class="photo-ctn"  v-if="pic">
           <v-img :src="pic"></v-img>
           <div class="wp-btns">
             <a class="comment-btn" @click="clickcomment">
@@ -53,6 +43,17 @@
         <v-card-text>
           <div class="text--primary">{{content}}</div>
         </v-card-text>
+
+        <v-row>
+          <v-col cols="7">
+            <v-icon size="28" class="mr-1">mdi-calendar</v-icon>
+            <span class="subtitle-2">{{date}}</span>
+          </v-col>
+          <v-col cols="5" v-if="location">
+            <v-icon size="28" class="mr-1">mdi-earth</v-icon>
+            <span class="subtitle-2">{{location}}</span>
+          </v-col>
+        </v-row>
 
         <v-row v-show="auth && user.userinfo &&uid === user.userinfo.id">
           <v-col>
@@ -283,7 +284,7 @@ export default {
         })
         .catch(error => {
           this.$store.dispatch("updateAlter", {
-            msg: "网络异常, 查看失败",
+            msg: "网络异常,删除失败",
             msgType: "error",
             msgShow: true
           });
@@ -502,7 +503,6 @@ export default {
 .icon-btnbg {
   -webkit-tap-highlight-color: transparent;
   font-size: 100%;
-  float: right;
   display: inline-block;
   vertical-align: text-bottom;
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAA2CAYAAAD3YagRAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAABd0RVh0Q3JlYXRpb24gVGltZQAyMDE0LjYuMjdz2qYwAAAAHHRFWHRTb2Z0d2FyZQBBZG9iZSBGaXJld29ya3MgQ1M26LyyjAAAAU9JREFUSImtlu1Kw0AQRY8NCAGhmjT6lj6DT+VD+CZ+tGD+CErFH6mw3MzuXIsLgc5mD7l3ZruzF8AD7fEEPBbxANxvEgjgTeIJwAFfJd654F7i0QE/gVnmLKnqD0yp6u8K6B1Q/e1+f2TgQeLRBZ8lnhzwO/iiJfUdOMqcJVUzeglszwGHcn0LrPrLQK3hrQtqKQYH/Dg95bCk6ubeUBS/Baq/LdA5oJZi1AWu1DsX1BoOuiACj6w9TrooAg8s/4yzwHL0pycFNaOrr/07mGa0Boa9IgNn1pvbAlVmR3FctMCo8OHu0smwpTmgJibMaAQ2z5ka+MVyCJfDkrpnvbktqervhuX0TsFqS8vAF3lX9aegtUcj8CypM8vVpByWVPXXs9wwUrDZ0lqgJqbprwStcyYCqxehFli96GWg+uuAawds3i5aYNpgauCfawjwAw7TQvoFhoY7AAAAAElFTkSuQmCC);
