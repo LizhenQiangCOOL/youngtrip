@@ -1,5 +1,5 @@
 <template class="d-flex">
-  <v-card elevation="0" max-width="720px" style="margin:0 auto">
+  <v-card elevation="0" max-width="720px" style="margin:0 auto" class="mx-2 mt-4">
     <v-img :src="picurl" height="35vh" gradient="to right, rgba(0, 0, 0, 0.5) 0%, transparent">
       <v-card-text>
         <v-row>
@@ -24,7 +24,7 @@
 
         <v-divider color="white"></v-divider>
 
-        <v-row class="mt-3">
+        <v-row class="mt-6">
           <v-col cols="4">
             <div class="d-flex justify-center white--text">
               <v-badge color="blue" :content="days.toString()">天数</v-badge>
