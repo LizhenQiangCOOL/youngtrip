@@ -12,40 +12,37 @@
     </span>
 
     <div v-for="(item, i) in cards" :key="i">
-      <v-card
-        class="px-2 pt-2 pb-1 mx-2"
-        elevation="1"
-        max-width="720px"
-        style="margin:0 auto"
-        @click="intocontent(item)"
-      >
-        <div class="photo-ctn" v-if="item.pic">
-          <v-img
-            :src="item.pic"
-            lazy-src="https://picsum.photos/id/11/100/60"
-            gradient="to right, rgba(0, 0, 0, 0.5) 0%, transparent"
-          >
-            <template v-slot:placeholder>
-              <v-row class="fill-height ma-0" align="center" justify="center">
-                <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
-              </v-row>
-            </template>
-          </v-img>
+      <v-card class="px-2 pt-2 pb-1 mx-2" elevation="1" max-width="720px" style="margin:0 auto"  @click="intocontent(item)">
+        <div v-if="item.pic">
+          <div class="photo-ctn" v-if="handelurl(item.pic)==='img'">
+            <v-img
+              :src="item.pic"
+              lazy-src="https://picsum.photos/id/11/100/60"
+              gradient="to right, rgba(0, 0, 0, 0.5) 0%, transparent"
+            >
+              <template v-slot:placeholder>
+                <v-row class="fill-height ma-0" align="center" justify="center">
+                  <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                </v-row>
+              </template>
+            </v-img>
+            <div class="wp-btns">
+              <a class="comment-btn">
+                <v-icon size="20" color="white" class="pt-1 mx-1 float-right">mdi-message</v-icon>
+                <span>{{item.comments.length}}</span>
+              </a>
+              <i class="icon-btnbg"></i>
+              <a :class="likeclass">
+                <v-icon size="20" :color="likecolor" class="mx-1">mdi-cards-heart</v-icon>
+                <span>{{item.likeUsers.length}}</span>
+              </a>
+            </div>
+          </div>
 
-          <div class="wp-btns">
-            <a class="comment-btn">
-              <v-icon size="20" color="white" class="pt-1 mx-1 float-right">mdi-message</v-icon>
-              <span>{{item.comments.length}}</span>
-            </a>
-            <i class="icon-btnbg"></i>
-            <a :class="likeclass">
-              <v-icon size="20" :color="likecolor" class="mx-1">mdi-cards-heart</v-icon>
-              <span>{{item.likeUsers.length}}</span>
-            </a>
+          <div v-else>
+            <d-player :options="urlRoptions(item.pic)"></d-player>
           </div>
         </div>
-
-
 
         <v-card-text>
           <div class="text--primary">{{item.content}}</div>
@@ -53,7 +50,8 @@
 
         <v-row>
           <v-col cols="7" class="d-flex align-center">
-            <v-icon size="20" class="mr-1">mdi-calendar</v-icon>{{item.date}}
+            <v-icon size="20" class="mr-1">mdi-calendar</v-icon>
+            {{item.date}}
             <span class="body-1 cla"></span>
           </v-col>
           <v-col cols="5" class="d-flex flex-row-reverse" v-if="item.location">
@@ -63,10 +61,8 @@
               </v-avatar>
               {{item.location}}
             </v-chip>
-
           </v-col>
         </v-row>
-
       </v-card>
 
       <span class="d-flex justify-center" v-if="i!=cards.length-1">
@@ -77,7 +73,14 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+import VueDPlayer from "vue-dplayer";
+import "vue-dplayer/dist/vue-dplayer.css";
+
 export default {
+  components: {
+    "d-player": VueDPlayer
+  },
   props: {
     cards: {
       type: Array,
@@ -92,9 +95,9 @@ export default {
       required: true
     }
   },
+  computed: {},
   data: () => ({
-    img:
-      "http://photos.breadtrip.com/photo_2019_10_15_a62a735bac66d94567b709f570194f92.jpg?imageView/1/w/640/h/480/q/85",
+    img: "",
     likecolor: "white",
     likeclass: "like-btn"
   }),
@@ -107,7 +110,30 @@ export default {
           card: item
         }
       });
-    }
+    },
+    handelurl(url) {
+      if (typeof url === "string") {
+        const ulist = url.split(".");
+        const u = ulist[ulist.length - 1];
+        if (u === "mp4") {
+          return "video";
+        } else {
+          return "img";
+        }
+      } else {
+        return null;
+      }
+    },
+    urlRoptions(url) {
+      return {
+        video: {
+          url: url,
+          type: "normal"
+        },
+        autoplay: false,
+        hotkey: true
+      };
+    },
   }
 };
 </script>

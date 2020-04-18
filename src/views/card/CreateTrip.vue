@@ -100,7 +100,13 @@
                     <v-hover>
                       <template v-slot:default="{ hover }">
                         <v-item>
-                          <v-img :src="item.pic" height="150" class="text-right pa-2">
+
+                          <v-card elevation="0"  v-if="handelurl(item.pic)==='img'">
+                          <v-img
+                            :src="item.pic"
+                         
+                            class="text-right pa-2"
+                          >
                             <v-fade-transition>
                               <v-overlay v-if="hover" absolute color="#272727">
                                 <v-btn fab @click="editcard(item)" large color="blue" class="mx-1">
@@ -112,6 +118,19 @@
                               </v-overlay>
                             </v-fade-transition>
                           </v-img>
+                          </v-card>
+
+                          <v-card elevation="0" v-else>
+                            <d-player :options="urlRoptions(item.pic)"></d-player>
+                            <v-card-actions class="d-flex justify-center">
+                              <v-btn fab @click="editcard(item)"  class="mx-3" small>
+                                <v-icon>mdi-content-save-edit</v-icon>
+                              </v-btn>
+                              <v-btn fab @click="delcard(item)" class="mx-3" small>
+                                <v-icon>mdi-delete</v-icon>
+                              </v-btn>
+                            </v-card-actions>
+                          </v-card>
                         </v-item>
                       </template>
                     </v-hover>
@@ -147,8 +166,13 @@
 <script>
 import { validationMixin } from "vuelidate";
 import { required, maxLength } from "vuelidate/lib/validators";
+import VueDPlayer from "vue-dplayer";
+import "vue-dplayer/dist/vue-dplayer.css";
 
 export default {
+  components: {
+    "d-player": VueDPlayer
+  },
   mixins: [validationMixin],
   validations: {
     title: {
@@ -463,11 +487,10 @@ export default {
     },
 
     editcard(item) {
-       this.$router.push({
+      this.$router.push({
         name: "Edit",
-        params: { cardId: item.id, flag : true}
+        params: { cardId: item.id, flag: true }
       });
-
     },
     delcard(item) {
       const cardId = item.id;
@@ -490,6 +513,29 @@ export default {
             msgShow: true
           });
         });
+    },
+    handelurl(url) {
+      if (typeof url === "string") {
+        const ulist = url.split(".");
+        const u = ulist[ulist.length - 1];
+        if (u === "mp4") {
+          return "video";
+        } else {
+          return "img";
+        }
+      } else {
+        return null;
+      }
+    },
+    urlRoptions(url) {
+      return {
+        video: {
+          url: url,
+          type: "normal"
+        },
+        autoplay: false,
+        hotkey: true
+      };
     }
   }
 };

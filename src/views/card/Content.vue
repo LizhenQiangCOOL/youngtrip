@@ -25,18 +25,34 @@
         </v-row>
         <v-divider></v-divider>
 
-        <div class="photo-ctn"  v-if="pic">
-          <v-img :src="pic"></v-img>
-          <div class="wp-btns">
-            <a class="comment-btn" @click="clickcomment">
-              <v-icon size="20" color="white" class="pt-1 mx-1 float-right">mdi-message</v-icon>
-              <span>{{ comments.length}}</span>
-            </a>
-            <i class="icon-btnbg"></i>
-            <a :class="likeclass" @click="like">
-              <v-icon size="20" :color="likecolor" class="mx-1">mdi-cards-heart</v-icon>
-              <span>{{ likeUsers.length }}</span>
-            </a>
+        <div v-if="pic">
+          <div class="photo-ctn"  v-if="handelurl(pic)==='img'">
+            <v-img :src="pic"></v-img>
+            <div class="wp-btns">
+              <a class="comment-btn" @click="clickcomment">
+                <v-icon size="20" color="white" class="pt-1 mx-1 float-right">mdi-message</v-icon>
+                <span>{{ comments.length}}</span>
+              </a>
+              <i class="icon-btnbg"></i>
+              <a :class="likeclass" @click="like">
+                <v-icon size="20" :color="likecolor" class="mx-1">mdi-cards-heart</v-icon>
+                <span>{{ likeUsers.length }}</span>
+              </a>
+            </div>
+          </div>
+          <div v-else>
+            <d-player :options="urlRoptions(pic)"></d-player>
+              <div class="wp-btnsbk">
+              <a class="comment-btn" @click="clickcomment">
+                <v-icon size="20" color="white" class="pt-1 mx-1 float-right">mdi-message</v-icon>
+                <span>{{ comments.length}}</span>
+              </a>
+              <i class="icon-btnbg"></i>
+              <a :class="likeclass" @click="like">
+                <v-icon size="20" :color="likecolor" class="mx-1">mdi-cards-heart</v-icon>
+                <span>{{ likeUsers.length }}</span>
+              </a>
+            </div>
           </div>
         </div>
 
@@ -153,8 +169,13 @@
 
 <script>
 import { mapState } from "vuex";
+import VueDPlayer from "vue-dplayer";
+import "vue-dplayer/dist/vue-dplayer.css";
 
 export default {
+  components: {
+    "d-player": VueDPlayer
+  },
   data: () => ({
     uid: null,
     uavatar: null,
@@ -467,6 +488,29 @@ export default {
           avatar: userprofile.avatar
         }
       });
+    },
+    handelurl(url) {
+      if (typeof url === "string") {
+        const ulist = url.split(".");
+        const u = ulist[ulist.length - 1];
+        if (u === "mp4") {
+          return "video";
+        } else {
+          return "img";
+        }
+      } else {
+        return null;
+      }
+    },
+    urlRoptions(url) {
+      return {
+        video: {
+          url: url,
+          type: "normal"
+        },
+        autoplay: false,
+        hotkey: true
+      };
     }
   }
 };
@@ -483,6 +527,13 @@ export default {
   -webkit-tap-highlight-color: transparent;
   font-size: 100%;
   bottom: 15px;
+  position: absolute;
+  right: 10px;
+}
+.wp-btnsbk {
+  -webkit-tap-highlight-color: transparent;
+  font-size: 100%;
+  bottom: 65px;
   position: absolute;
   right: 10px;
 }
@@ -525,8 +576,6 @@ export default {
   background-color: rgba(0, 0, 0, 0.5);
   padding-right: 4px;
 }
-
-
 
 .comment-line {
   border-bottom: 1px dotted #dededc;

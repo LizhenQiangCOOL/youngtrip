@@ -126,7 +126,7 @@ export default {
   },
   data: () => ({
     uid: 1,
-    uavatar: "http://127.0.0.1:8000/media/card/200407_134531.jpg",
+    uavatar: "",
     uname: "admin",
 
     id: null,

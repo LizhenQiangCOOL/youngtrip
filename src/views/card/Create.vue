@@ -27,15 +27,16 @@
                       v-model="pic"
                       accept="image/*"
                       show-size
-                      label="图片"
+                      label="图片/短视屏"
                       prepend-icon="mdi-camera"
                       required
                       @change="uploadfile"
                       @click:clear="clickclear"
                     ></v-file-input>
                   </v-col>
-                  <v-col cols="12">
-                    <v-img :src="picurl" v-show="imgshow"></v-img>
+                  <v-col cols="12" v-show="imgshow">
+                    <v-img :src="picurl" v-if="handelurl(picurl)==='img'"></v-img>
+                    <d-player :options="options" v-else></d-player>
                   </v-col>
                 </v-row>
               </v-card-text>
@@ -156,8 +157,13 @@
 <script>
 import { validationMixin } from "vuelidate";
 import { required, maxLength } from "vuelidate/lib/validators";
+import VueDPlayer from "vue-dplayer";
+import "vue-dplayer/dist/vue-dplayer.css";
 
 export default {
+  components: {
+    "d-player": VueDPlayer
+  },
   mixins: [validationMixin],
   validations: {
     // title: {
@@ -194,7 +200,15 @@ export default {
 
       datetime: "",
 
-      flag: null
+      flag: null,
+      options: {
+        video: {
+          url: "",
+          type: "normal"
+        },
+        autoplay: false,
+        hotkey: true
+      }
     };
   },
   beforeRouteLeave(to, from, next) {
@@ -212,13 +226,15 @@ export default {
     this.date = trip.firstday;
     this.time = "00:00";
 
-
     if (cardId !== null) {
       this.id = cardId;
       this.imgshow = true;
       if (card && cardId === card.id) {
         let obj = card;
         this.picurl = obj.pic;
+        // 如果是视屏
+        this.options.video.url = this.picurl;
+
         // this.title = obj.title;
         this.content = obj.content;
         this.location = obj.location;
@@ -227,7 +243,6 @@ export default {
         this.date = datetimelist[0];
         this.time = datetimelist[1];
       } else {
-
         this.axios
           .get(`/card/${cardId}/`)
           .then(response => {
@@ -236,7 +251,9 @@ export default {
             this.content = obj.content;
             this.location = obj.location;
             this.datetime = obj.date;
-            this.picurl = obj.pic
+            this.picurl = obj.pic;
+            // 如果是视屏
+            this.options.video.url = this.picurl;
 
             let datetimelist = this.datetime.split(" ");
             this.date = datetimelist[0];
@@ -329,10 +346,15 @@ export default {
         .then(response => {
           this.picurl = response.data.data;
           this.load = false;
+          this.imgshow = true;
+          this.options.video.url = this.picurl;
+
+          // console.log('url', this.picurl)
+          // console.log(this.handelurl(this.picurl))
         })
         .catch(error => {
           this.$store.dispatch("updateAlter", {
-            msg: "图片上传失败",
+            msg: "图片/视屏上传失败",
             msgType: "error",
             msgShow: true
           });
@@ -414,9 +436,9 @@ export default {
 
             if (this.flag !== null) {
               const card = {
-                id:this.id,
+                id: this.id,
                 pic: this.picurl
-              }
+              };
               this.$store.dispatch("updateTripCard", card);
               this.$router.push({
                 name: "TripCreate",
@@ -475,6 +497,19 @@ export default {
         return 0;
       } else {
         return -1;
+      }
+    },
+    handelurl(url) {
+      if (typeof url === "string") {
+        const ulist = url.split(".");
+        const u = ulist[ulist.length - 1];
+        if (u === "mp4") {
+          return "video";
+        } else {
+          return "img";
+        }
+      } else {
+        return null;
       }
     }
   }
