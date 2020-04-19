@@ -42,7 +42,8 @@
           </div>
           <div v-else>
             <d-player :options="urlRoptions(pic)"></d-player>
-              <div class="wp-btnsbk">
+
+              <!-- <div class="wp-btnsbk">
               <a class="comment-btn" @click="clickcomment">
                 <v-icon size="20" color="white" class="pt-1 mx-1 float-right">mdi-message</v-icon>
                 <span>{{ comments.length}}</span>
@@ -52,7 +53,8 @@
                 <v-icon size="20" :color="likecolor" class="mx-1">mdi-cards-heart</v-icon>
                 <span>{{ likeUsers.length }}</span>
               </a>
-            </div>
+            </div> -->
+            
           </div>
         </div>
 

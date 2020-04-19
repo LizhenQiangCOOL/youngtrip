@@ -1,6 +1,7 @@
 <template>
   <div class="home">
     <Carousel />
+
     <HomeCard
       v-for="card in cards"
       :key="card.id"
@@ -21,6 +22,16 @@
         <v-icon>mdi-plus</v-icon>
       </v-btn>
     </v-speed-dial>
+
+    <div class="text-center">
+      <v-pagination
+        v-model="page"
+        :page="page"
+        :length="pagelength"
+        circle
+        @input="paginationInput"
+      ></v-pagination>
+    </div>
   </div>
 </template>
 
@@ -45,6 +56,8 @@ export default {
         this.count = response.data.count;
         this.next = response.data.next;
         this.previous = response.data.previous;
+        this.page = 1;
+        this.pagelength = Math.ceil(this.count / this.pagesize);
       })
       .catch(error => {
         this.$store.dispatch("updateAlter", {
@@ -55,6 +68,7 @@ export default {
         this.$router.push("/");
       });
   },
+
   data: () => ({
     count: null,
     next: null,
@@ -72,56 +86,12 @@ export default {
           avatar: "https://api.adorable.io/avatars/200/asfdafasdf.png",
           username: "小一爱客随"
         }
-      },
-      {
-        id: 2,
-        pic:
-          "http://photos.breadtrip.com/photo_2019_10_31_c26207f514c82339d22a3a88912f0ea6.jpg?imageView/1/w/640/h/480/q/85",
-        title: "非洲海岛流浪记🇲🇺毛里求斯cdn",
-        date: "2019.10.1   9025浏览",
-        userprofile: {
-          id: 1,
-          avatar: "https://api.adorable.io/avatars/200/asfdafasdf.png",
-          username: "小一爱客随"
-        }
-      },
-      {
-        id: 3,
-        pic:
-          "http://photos.breadtrip.com/photo_2019_12_11_33d7de2dd10931d698f65389a5693fc4.jpg?imageView/1/w/640/h/480/q/85",
-        title: "非洲海岛流浪记🇲🇺毛里求斯cdn",
-        date: "2019.10.1   9025浏览",
-        userprofile: {
-          id: 1,
-          avatar: "https://api.adorable.io/avatars/200/asfdafasdf.png",
-          username: "小一爱客随"
-        }
-      },
-      {
-        id: 4,
-        pic:
-          "http://photos.breadtrip.com/photo_2018_02_18_5e2813ae58c7a944a6622e0dde820c4c.jpg?imageView/1/w/640/h/480/q/85",
-        title: "非洲海岛流浪记🇲🇺毛里求斯cdn",
-        date: "2019.10.1   9025浏览",
-        userprofile: {
-          id: 1,
-          avatar: "https://api.adorable.io/avatars/200/asfdafasdf.png",
-          username: "小一爱客随"
-        }
-      },
-      {
-        id: 5,
-        pic:
-          "http://photos.breadtrip.com/photo_2019_12_29_d84e13c3d374449b8be03e939b4cbe33.jpg?imageView/2/w/1384/h/1384/q/85",
-        title: "非洲海岛流浪记🇲🇺毛里求斯cdn",
-        date: "2019.10.1   9025浏览",
-        userprofile: {
-          id: 1,
-          avatar: "https://api.adorable.io/avatars/200/asfdafasdf.png",
-          username: "小一爱客随"
-        }
       }
-    ]
+    ],
+
+    pagesize: 3,
+    page: 1,
+    pagelength: 1
   }),
   methods: {
     checkauth() {
@@ -134,6 +104,29 @@ export default {
       } else {
         this.$router.push("/trips/create");
       }
+    },
+
+    paginationInput() {
+      const params = {
+        page:this.page
+      };
+      this.axios
+        .get(`/trip/`, { params })
+        .then(response => {
+          this.cards = response.data.results;
+          this.count = response.data.count;
+          this.next = response.data.next;
+          this.previous = response.data.previous;
+          this.pagelength = Math.ceil(this.count / this.pagesize);
+        })
+        .catch(error => {
+          this.$store.dispatch("updateAlter", {
+            msg: "获取数据失败",
+            msgType: "error",
+            msgShow: true
+          });
+          this.$router.push("/");
+        });
     }
   },
   beforeRouteEnter(to, from, next) {
