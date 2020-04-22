@@ -33,6 +33,12 @@ export default [
             auth: true
         }
     },
+    // slide
+    {
+        path: '/slides/:slideId/content',
+        name: 'Slide',
+        component: () => import('@/views/Slide.vue'),
+    },
     // trip
     {
         path: '/trips/create',
