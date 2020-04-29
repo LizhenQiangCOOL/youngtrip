@@ -17,7 +17,7 @@
           <div class="photo-ctn" v-if="handelurl(item.pic)==='img'">
             <v-img
               :src="item.pic"
-              lazy-src="https://picsum.photos/id/11/100/60"
+              :lazy-src="lazyimg"
               gradient="to right, rgba(0, 0, 0, 0.5) 0%, transparent"
             >
               <template v-slot:placeholder>
@@ -99,7 +99,8 @@ export default {
   data: () => ({
     img: "",
     likecolor: "white",
-    likeclass: "like-btn"
+    likeclass: "like-btn",
+    lazyimg:`${process.env.VUE_APP_IMGURL}img/lazyimg.jpg`
   }),
   methods: {
     intocontent(item) {

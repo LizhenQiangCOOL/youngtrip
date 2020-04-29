@@ -8,7 +8,7 @@
         <v-img
           class="ma-3"
           :src="avatar"
-          lazy-src="https://picsum.photos/id/11/100/60"
+          :lazy-src="lazyimg"
           alt="图像加载出错"
         ></v-img>
 
@@ -38,7 +38,8 @@ export default {
   },
 
   data: () => ({
-    avatar: ""
+    avatar: "",
+    lazyimg:`${process.env.VUE_APP_IMGURL}img/lazyimg.jpg`
   }),
   created() {
     const user = this.$store.state.user;

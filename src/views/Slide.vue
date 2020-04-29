@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card class="mx-3 mt-4" elevation="0">
-      <v-img :src="pic" lazy-src="https://picsum.photos/id/11/100/60">
+      <v-img :src="pic" :lazy-src="lazyimg">
         <template v-slot:placeholder>
           <v-row class="fill-height ma-0" align="center" justify="center">
             <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
@@ -49,6 +49,7 @@ export default {
     id:null,
     pic: '',
     rich: '',
+    lazyimg:`${process.env.VUE_APP_IMGURL}img/lazyimg.jpg`
   }),
 
   methods: {

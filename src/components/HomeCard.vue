@@ -8,7 +8,7 @@
   >
     <v-img
       :src="img"
-      lazy-src="https://picsum.photos/id/11/100/60"
+      :lazy-src="lazyimg"
       height="30vh"
       gradient="to right, rgba(0, 0, 0, 0.5) 0%, transparent"
     >
@@ -83,7 +83,9 @@ export default {
       required: true
     }
   },
-  data: () => ({}),
+  data: () => ({
+    lazyimg:`${process.env.VUE_APP_IMGURL}img/lazyimg.jpg`
+  }),
   methods: {
     intocontent() {
       if (this.flag) {
