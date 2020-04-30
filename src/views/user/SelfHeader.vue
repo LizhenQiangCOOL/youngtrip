@@ -26,10 +26,22 @@
         <v-row>
           <v-col class="d-flex justify-center title pt-2 white--text">{{ author }}</v-col>
         </v-row>
-        <v-row v-show="!(auth && id === authUserid)">
+        <v-row v-if="!(auth && id === authUserid)">
           <v-col class="d-flex justify-center">
-            <v-btn v-if="auth && follow" rounded width="100" style="color:white;" outlined @click="followyou">已关注</v-btn>
-            <v-btn v-else  rounded width="100" @click="followyou">关注</v-btn>
+            <v-btn
+              v-if="auth && follow"
+              rounded
+              width="100"
+              style="color:white;"
+              outlined
+              @click="followyou"
+            >已关注</v-btn>
+            <v-btn v-else rounded width="100" @click="followyou">关注</v-btn>
+          </v-col>
+        </v-row>
+        <v-row v-else>
+          <v-col class="d-flex justify-center">
+            <v-btn rounded width="100" @click="enteredituser">个人设置</v-btn>
           </v-col>
         </v-row>
       </v-card-text>
@@ -81,13 +93,16 @@ export default {
   }),
   methods: {
     followyou() {
-      this.$emit('followyou')
+      this.$emit("followyou");
     },
-    enterfollower(){
-      this.$emit('enterfollower')
+    enterfollower() {
+      this.$emit("enterfollower");
     },
-    enterfollowee(){
-      this.$emit('enterfollowee')
+    enterfollowee() {
+      this.$emit("enterfollowee");
+    },
+    enteredituser() {
+      this.$emit("enteredituser");
     }
   }
 };

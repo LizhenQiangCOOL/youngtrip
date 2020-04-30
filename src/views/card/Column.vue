@@ -12,6 +12,7 @@
       @followyou="followyou"
       @enterfollower="enterfollower"
       @enterfollowee="enterfollowee"
+      @enteredituser="enteredituser"
     />
 
     <v-card-text class="subtitle-1" style="padding-bottom:0">
@@ -246,6 +247,11 @@ export default {
           }
         });
       }
+    },
+    enteredituser(){
+      this.$router.push({
+          name: "edit",
+        });
     }
   }
 };
