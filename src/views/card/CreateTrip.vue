@@ -100,30 +100,31 @@
                     <v-hover>
                       <template v-slot:default="{ hover }">
                         <v-item>
-
-                          <v-card elevation="0"  v-if="handelurl(item.pic)==='img'">
-                          <v-img
-                            :src="item.pic"
-                         
-                            class="text-right pa-2"
-                          >
-                            <v-fade-transition>
-                              <v-overlay v-if="hover" absolute color="#272727">
-                                <v-btn fab @click="editcard(item)" large color="blue" class="mx-1">
-                                  <v-icon>mdi-content-save-edit</v-icon>
-                                </v-btn>
-                                <v-btn fab @click="delcard(item)" large color="blue" class="mx-1">
-                                  <v-icon>mdi-delete</v-icon>
-                                </v-btn>
-                              </v-overlay>
-                            </v-fade-transition>
-                          </v-img>
+                          <v-card elevation="0" v-if="handelurl(item.pic)==='img'">
+                            <v-img :src="item.pic" class="text-right pa-2">
+                              <v-fade-transition>
+                                <v-overlay v-if="hover" absolute color="#272727">
+                                  <v-btn
+                                    fab
+                                    @click="editcard(item)"
+                                    large
+                                    color="blue"
+                                    class="mx-1"
+                                  >
+                                    <v-icon>mdi-content-save-edit</v-icon>
+                                  </v-btn>
+                                  <v-btn fab @click="delcard(item)" large color="blue" class="mx-1">
+                                    <v-icon>mdi-delete</v-icon>
+                                  </v-btn>
+                                </v-overlay>
+                              </v-fade-transition>
+                            </v-img>
                           </v-card>
 
                           <v-card elevation="0" v-else>
                             <d-player :options="urlRoptions(item.pic)"></d-player>
                             <v-card-actions class="d-flex justify-center">
-                              <v-btn fab @click="editcard(item)"  class="mx-3" small>
+                              <v-btn fab @click="editcard(item)" class="mx-3" small>
                                 <v-icon>mdi-content-save-edit</v-icon>
                               </v-btn>
                               <v-btn fab @click="delcard(item)" class="mx-3" small>
@@ -298,13 +299,14 @@ export default {
         })
         .catch(error => {
           this.$store.dispatch("updateAlter", {
-            msg: "图片上传失败",
+            msg: error.response.data.msg,
             msgType: "error",
             msgShow: true
           });
           this.imgshow = false;
           this.picurl = "";
           this.load = false;
+          this.pic = undefined;
         });
     },
     clickclear() {
@@ -404,6 +406,11 @@ export default {
           msgShow: true
         });
       } else {
+        this.$router.push({
+          name: "Create",
+          params: { flag: true }
+        });
+
         this.$router.push("/cards/create");
       }
     },

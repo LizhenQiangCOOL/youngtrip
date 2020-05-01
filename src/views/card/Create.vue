@@ -354,13 +354,14 @@ export default {
         })
         .catch(error => {
           this.$store.dispatch("updateAlter", {
-            msg: "图片/视屏上传失败",
+            msg: error.response.data.msg,
             msgType: "error",
             msgShow: true
           });
           this.imgshow = false;
           this.picurl = "";
           this.load = false;
+          this.pic = undefined;
         });
     },
     clickclear() {
@@ -477,15 +478,23 @@ export default {
     },
 
     cancel() {
-      if (this.id !== null) {
+      if (this.flag !== null) {
+        // 说明是从 游记创建哪里过来的
         this.$router.push({
-          name: "Content",
-          params: { cardId: this.id }
+          name: "TripCreate",
+          params: { step: 2 }
         });
       } else {
-        this.$router.push({
-          name: "Home"
-        });
+        if (this.id !== null) {
+          this.$router.push({
+            name: "Content",
+            params: { cardId: this.id }
+          });
+        } else {
+          this.$router.push({
+            name: "Home"
+          });
+        }
       }
     },
     datetab(date1, date2) {
