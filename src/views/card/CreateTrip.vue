@@ -119,10 +119,12 @@
                                 </v-overlay>
                               </v-fade-transition>
                             </v-img>
+                                <v-card-text>内容：{{item.content}}</v-card-text>
                           </v-card>
 
                           <v-card elevation="0" v-else>
-                            <d-player :options="urlRoptions(item.pic)"></d-player>
+                            <d-player :options="urlRoptions(item.pic)" v-if="item.pic!==''"></d-player>
+                            <v-card-text>内容：{{item.content}}</v-card-text>
                             <v-card-actions class="d-flex justify-center">
                               <v-btn fab @click="editcard(item)" class="mx-3" small>
                                 <v-icon>mdi-content-save-edit</v-icon>
@@ -424,7 +426,6 @@ export default {
       this.axios
         .patch(`/trip/${this.id}/`, trip, { headers: headers })
         .then(response => {
-          this.clearData();
           this.$store.dispatch("updateAlter", {
             msg: "创建游记成功",
             msgType: "success",
@@ -432,6 +433,7 @@ export default {
           });
           // 跳转展示页面
           this.$router.push({ name: "Trip", params: { tripId: this.id } });
+          this.clearData();
         })
         .catch(error => {
           this.$store.dispatch("updateAlter", {
@@ -522,6 +524,9 @@ export default {
         });
     },
     handelurl(url) {
+      if(url == ''){
+        return null
+      }
       if (typeof url === "string") {
         const ulist = url.split(".");
         const u = ulist[ulist.length - 1];

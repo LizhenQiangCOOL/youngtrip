@@ -404,6 +404,7 @@ export default {
             });
 
             this.$store.dispatch("updateTripAddCards", response.data.data);
+            
             this.$router.push({
               name: "TripCreate",
               params: { step: 2 }
