@@ -106,6 +106,7 @@ export default {
     },
     logout() {
       this.$store.dispatch("logout");
+      this.$store.dispatch("clearTrip");
     },
     search() {
       const value = this.value;

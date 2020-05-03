@@ -224,11 +224,13 @@ export default {
     if (obj.id !== null) {
       this.id = obj.id;
       this.title = obj.title;
-      this.picurl = obj.picurl;
+      this.picurl = obj.pic;
       this.date = obj.firstday;
       this.location = obj.location;
       this.imgshow = true;
       this.items = obj.cards;
+
+
     } else {
     }
   },
@@ -356,7 +358,7 @@ export default {
             const trip = {
               id: this.id,
               title: this.title,
-              picurl: this.picurl,
+              pic: this.picurl,
               firstday: this.date,
               location: this.location
             };
@@ -385,7 +387,7 @@ export default {
             const trip = {
               id: this.id,
               title: this.title,
-              picurl: this.picurl,
+              pic: this.picurl,
               firstday: this.date,
               location: this.location
             };
@@ -427,7 +429,7 @@ export default {
         .patch(`/trip/${this.id}/`, trip, { headers: headers })
         .then(response => {
           this.$store.dispatch("updateAlter", {
-            msg: "创建游记成功",
+            msg: "创建或修改游记成功",
             msgType: "success",
             msgShow: true
           });

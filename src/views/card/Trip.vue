@@ -51,7 +51,7 @@ export default {
         this.title = obj.title;
         this.picurl = obj.pic;
 
-        this.firstday = obj.firstday
+        this.firstday = obj.firstday;
 
         let newcards = [];
         let date = null;
@@ -78,7 +78,7 @@ export default {
           .get(`/trip/${tripId}/`)
           .then(response => {
             let obj = response.data;
-            
+
             this.uid = obj.userprofile.id;
             this.uavatar = obj.userprofile.avatar;
             this.uname = obj.userprofile.username;
@@ -89,8 +89,7 @@ export default {
             this.title = obj.title;
             this.picurl = obj.pic;
 
-       
-            this.firstday = obj.firstday
+            this.firstday = obj.firstday;
 
             let newcards = [];
             let date = null;

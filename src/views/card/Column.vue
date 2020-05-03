@@ -40,6 +40,9 @@
       :uid="card.userprofile.id"
       :avatarhidden="true"
       :flag="true"
+      @deltrip="deltrip"
+      @edittrip="edittrip"
+      :tripdelflag="auth && user.userinfo &&uid === user.userinfo.id"
       v-else
     ></HomeCard>
   </v-card>
@@ -248,10 +251,41 @@ export default {
         });
       }
     },
-    enteredituser(){
+    enteredituser() {
       this.$router.push({
-          name: "edit",
+        name: "edit"
+      });
+    },
+
+    deltrip(item) {
+      const tripId = item.id;
+      const headers = {
+        Authorization: `jwt ${this.$store.state.user.token}`
+      };
+      this.axios
+        .delete(`/trip/${tripId}/`, { headers: headers })
+        .then(response => {
+          this.$store.dispatch("updateAlter", {
+            msg: response.data.msg,
+            msgType: "success",
+            msgShow: true
+          });
+          let newcards = this.cards.filter(el => el.id !== item.id);
+          this.cards = newcards;
+        })
+        .catch(error => {
+          this.$store.dispatch("updateAlter", {
+            msg: "网络异常,删除失败",
+            msgType: "error",
+            msgShow: true
+          });
         });
+    },
+    edittrip(item) {
+      this.$store.dispatch("updateTrip", item);
+      this.$router.push({
+        name: "TripCreate"
+      });
     }
   }
 };
