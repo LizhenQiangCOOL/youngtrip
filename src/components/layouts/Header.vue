@@ -1,14 +1,5 @@
 <template>
-  <v-app-bar
-    app
-    flex
-    color="primary"
-    dark
-    :src="bgimg"
-    class="pt-1"
-    width="100%"
-    height="50%"
-  >
+  <v-app-bar app flex color="primary" dark :src="bgimg" class="pt-1" width="100%" height="50%">
     <v-btn icon to="/">
       <v-icon size="32">mdi-home</v-icon>
     </v-btn>
@@ -51,7 +42,7 @@
       </template>
       <v-list>
         <v-list-item v-for="(item, index) in items" :key="index" @click="memuclick(index)">
-          <v-icon>{{item.icon}}</v-icon>
+          <v-icon class="mx-1">{{item.icon}}</v-icon>
           <v-list-item-title>{{ item.title }}</v-list-item-title>
         </v-list-item>
       </v-list>
@@ -69,10 +60,13 @@ import router from "@/router";
 export default {
   name: "Header",
   data: () => ({
-    bgimg:`${process.env.VUE_APP_IMGURL}img/headbg.png`,
+    bgimg: `${process.env.VUE_APP_IMGURL}img/headbg.png`,
     items: [
-      { title: "个人", icon: "mdi-account-edit" },
-      { title: "退出", icon: "mdi-account-off" }
+      { title: "增加游记", icon: "mdi-plus-circle-outline" },
+      { title: "个人喜欢", icon: "mdi-cards-heart" },
+      { title: "个人中心", icon: "mdi-card-account-details" },
+      { title: "修改信息", icon: "mdi-account-edit" },
+      { title: "退出登录", icon: "mdi-account-off" }
     ],
     expandsearch: false,
     value: ""
@@ -97,9 +91,25 @@ export default {
     memuclick(index) {
       switch (index) {
         case 0:
-          router.push("/user/edit");
+          this.$router.push("/trips/create");
           break;
         case 1:
+          this.$router.push("/cards/likecard");
+          break;
+        case 2:
+          this.$router.push({
+            name: "Column",
+            params: {
+              user: this.$store.state.user.userinfo.id,
+              name: this.$store.state.user.userinfo.user.username,
+              avatar: this.$store.state.user.userinfo.avatar
+            }
+          });
+          break;
+        case 3:
+          router.push("/user/edit");
+          break;
+        case 4:
           this.logout();
           break;
       }

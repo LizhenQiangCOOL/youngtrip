@@ -8,9 +8,9 @@
       @click="intocontent"
     >
       <v-img
+         class="handelheight"
         :src="img"
         :lazy-src="lazyimg"
-        height="30vh"
         gradient="to right, rgba(0, 0, 0, 0.5) 0%, transparent"
       >
         <!-- 图片加载转圈 -->
@@ -132,6 +132,15 @@ export default {
 </script>
 
 <style scoped>
+.handelheight{height: 30vh;}
+@media (min-width:600px) and (max-width:960px){
+  .handelheight{height: 35vh;}
+}
+@media (min-width:960px){
+  .handelheight{height: 40vh;}
+}
+
+
 .HomeCard-detail:before {
   content: "";
   position: absolute;

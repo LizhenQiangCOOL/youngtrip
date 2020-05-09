@@ -57,17 +57,14 @@ export default {
         {
           name: "首页",
           icon: "mdi-history",
-          to: "/"
         },
         {
           name: "喜欢",
           icon: "mdi-cards-heart",
-          to: "/cards/likecard"
         },
         {
           name: "个人",
           icon: "mdi-account-box",
-          to: "/user"
         }
       ]
     };

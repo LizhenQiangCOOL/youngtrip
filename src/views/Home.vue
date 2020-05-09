@@ -17,7 +17,7 @@
       :flag="true"
     />
 
-    <v-speed-dial fixed bottom right value="true" class="d=felx d-md-none">
+    <v-speed-dial fixed bottom right value="true" class="d-felx d-md-none">
       <v-btn color="pink" fab style="position:relative; top:-25px; left:-25px" @click="checkauth">
         <v-icon>mdi-plus</v-icon>
       </v-btn>
