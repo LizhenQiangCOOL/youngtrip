@@ -439,7 +439,8 @@ export default {
             if (this.flag !== null) {
               const card = {
                 id: this.id,
-                pic: this.picurl
+                pic: this.picurl,
+                content: this.content,
               };
               this.$store.dispatch("updateTripCard", card);
               this.$router.push({
