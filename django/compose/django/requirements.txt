@@ -30,7 +30,7 @@ psycopg2==2.8.4
 # django-celery-beat 定时任务支持DjangoORM
 # flower　　任务监控
 celery==4.4.0
-django-celery-results==1.1.2
+django-celery-results==2.4.0
 django-celery-beat==1.5.0
 flower==0.9.3
 
