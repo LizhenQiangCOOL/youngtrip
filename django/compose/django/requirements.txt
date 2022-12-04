@@ -45,5 +45,5 @@ supervisor==4.1.0
 gevent==1.4.0 
 
 # img
-pillow==7.0.0
+pillow==9.3.0
 numpy
