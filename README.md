@@ -1,12 +1,10 @@
 # 项目预览
-在线访问(GithubPages)：<https://lizhenqiangcool.github.io/youngtrip/dist/>
+简单的本科毕业设计
 
 |图片|图片|
 |---|---|
 |![首页](https://lizhenqiangcool.github.io/youngtrip/img/youngtrip1.png)| ![喜欢页](https://lizhenqiangcool.github.io/youngtrip/img/youngtrip4.png)|
 |![内容页](https://lizhenqiangcool.github.io/youngtrip/img/youngtrip2.png)|  ![喜欢与点赞](https://lizhenqiangcool.github.io/youngtrip/img/youngtrip3.png)|
-
-(如果图片显示不了，可能DNS出了问题，通过githubpage查看：<https://lizhenqiangcool.github.io/youngtrip/>)
 
 # 技术栈
 1. 前端: Vue + Vuex + Vue-router + Vuetify + axios
